@@ -233,19 +233,19 @@ void account(int option) {
 				break;
 		}
 }
-bool waitForUserInput(int maxSeconds) {
-    auto startTime = std::chrono::system_clock::now();
-    std::this_thread::sleep_for(std::chrono::seconds(maxSeconds));
-    auto endTime = std::chrono::system_clock::now();
-    auto elapsedSeconds = std::chrono::duration_cast<std::chrono::seconds>(endTime - startTime).count();
-    return elapsedSeconds < maxSeconds;
-}
-void menu() {
-	int option;
-	cout << "\n\nMain Menu--" <<endl;
-	cout << "\tPlease make a selection. " << endl;
-	cout << "\t1. Checkings \n\t2. Savings \n\t3. Exit" << endl;
-int maxSeconds=10;
+		bool waitForUserInput(int maxSeconds) {
+			auto startTime = std::chrono::system_clock::now();
+			std::this_thread::sleep_for(std::chrono::seconds(maxSeconds));
+			auto endTime = std::chrono::system_clock::now();
+			auto elapsedSeconds = std::chrono::duration_cast<std::chrono::seconds>(endTime - startTime).count();
+			return elapsedSeconds < maxSeconds;
+		}
+		void menu() {
+			int option;
+			cout << "\n\nMain Menu--" <<endl;
+			cout << "\tPlease make a selection. " << endl;
+			cout << "\t1. Checkings \n\t2. Savings \n\t3. Exit" << endl;
+		int maxSeconds=10;
 
 
     std::cout << "Enter an option within " << maxSeconds << " seconds:" << std::endl;
