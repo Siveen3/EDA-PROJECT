@@ -123,8 +123,8 @@ class AccountSettings {
 			} 
 		}
 		void print (){
-		cout<<"your account balance is "<<balance;
-		cout<<"your account type is "<<type;
+		cout<<"your account balance is:	 "<<balance;
+		cout<<"your account type is   :	 "<<type;
 		menu();
 		}
 
