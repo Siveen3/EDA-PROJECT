@@ -1,14 +1,15 @@
 module ATM (
 input[2:0] opcode,
-input[3:0] password
-
+input[3:0] password,
+input allowwithdraw,take_receipt,
+input wire  [31:0] withdraw_amount,
 // don't forget to add your outputs 
 );
 
 reg[1:0] chances = 2'00;
 reg[3:0] visa_password = 4'b1110;
 reg[3:0] current_state, next_state;
-
+reg [31:0] existing_amount = 32'h000186A0;
 
 parameter[3:0]  insert_card_state = 4'b0000,
                 language_state = 4'b0001,
@@ -72,6 +73,36 @@ parameter[3:0]  insert_card_state = 4'b0000,
                         else 
                             next_state = home_state;
                     end
+    withdraw_state     		: begin
+								if(allowwithdraw == 1'b1)
+									next_state =allow_withdraw_state ;
+								else if (allowwithdraw == 1'b0)
+									next_state =home_state ;
+
+								else
+									next_state = withdraw_state ;			  
+								end
+    allow_withdraw_state    :begin 
+                                if(withdraw_amount > existing_amount)
+									next_state = withdraw_state ;
+								else  (withdraw_amount <= existing_amount)
+									next_state = confirm_state ;
+                                
+
+                                end   
+    confirm_state            :begin 
+                                if(take_receipt == 1'b0)
+									next_state = home_state ;
+								else if  (take_receipt == 1'b1)
+									next_state = print_state ;
+								else 
+                                    next_state=confirm_state;	
+
+                                end      
+    print_state             :begin
+
+                                    next_state=home_state;
+                                end
                             
     endcase
     end

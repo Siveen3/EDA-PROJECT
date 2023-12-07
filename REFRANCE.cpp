@@ -62,34 +62,71 @@ class AccountSettings {
 		int type;		// account type
 		int balance;	// account balance
 	public:
+	
+
 		AccountSettings(int type) {
 			// type 1 = checkings
 			// type 2 = savings
 			this->type = type;
 			this->balance = AccountDetails[this->type];
 		}
-		int getWithdraw() {
-			int withdrawAmount;
+		void withdraw_state(){
+			int allowwithdraw;
+			cout <<"if you want to allow withdraw enter 1 else enter 0";
+			cin>>allowwithdraw;
+			if (allowwithdraw=1)
+			allow_withdraw_state();
+			else if (allowwithdraw =0)
+			menu();
+			else {
+				cout<<"ERROR allowed values are 1 and 0 only";
+				withdraw_state();
+			}
+
+		}
+		int allow_withdraw_state() {
+			int withdraw_amount;
 			cout << "Please enter amount to withdrawn:\n " << endl;
-			cin >> withdrawAmount;
+			cin >> withdraw_amount;
 
 			// get account type
-			if(withdrawAmount <= this->balance){
-				int AccountBalance = this->balance -= withdrawAmount;
+			if(withdraw_amount <= this->balance){
+				int AccountBalance = this->balance -= withdraw_amount;
 				cout << "Dispensing... ";
-				cout << "$"<< withdrawAmount << endl;
+				cout << "$"<< withdraw_amount << endl;
 				
 				// update the account balance
-				AccountDetails[this->type] = AccountBalance;
-				getBalance();
+			//	AccountDetails[this->type] = AccountBalance;
+				//getBalance();
+				confirm_state();
 
 			} else {
 				cout << "Insufficent funds" << endl;
-				getBalance();
+				//getBalance();
+				withdraw_state();
 			}
 
 			return 0;
 		}
+void confirm_state(){
+	cout<<"if you want to take a receipt enter 0 else enter 1";
+	int take_receipt;
+	cin >>take_receipt;
+	if (take_receipt ==0)
+	menu();
+	else if (take_receipt==1 )
+	print ();
+	else 
+	{
+		cout <<"WRONG OUTPUT\nthe allowed values of take_receipt are 1 and 0 ";
+		confirm_state();
+	} 
+}
+void print (){
+cout<<"your account balance is "<<balance;
+cout<<"your account type is "<<type;
+menu();
+}
 
 		int getDeposit() {
 			int depositAmount;
@@ -174,7 +211,7 @@ void account(int option) {
 				cout << Account.getBalance();
 				break;
 			case 2: 
-				cout << Account.getWithdraw();
+				cout << Account.allow_withdraw_state();
 				break;
 			case 3: 
 				cout << Account.getDeposit();
