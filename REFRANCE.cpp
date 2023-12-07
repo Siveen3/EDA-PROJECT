@@ -108,25 +108,25 @@ class AccountSettings {
 
 			return 0;
 		}
-void confirm_state(){
-	cout<<"if you want to take a receipt enter 0 else enter 1";
-	int take_receipt;
-	cin >>take_receipt;
-	if (take_receipt ==0)
-	menu();
-	else if (take_receipt==1 )
-	print ();
-	else 
-	{
-		cout <<"WRONG OUTPUT\nthe allowed values of take_receipt are 1 and 0 ";
-		confirm_state();
-	} 
-}
-void print (){
-cout<<"your account balance is "<<balance;
-cout<<"your account type is "<<type;
-menu();
-}
+		void confirm_state(){
+			cout<<"if you want to take a receipt enter 0 else enter 1";
+			int take_receipt;
+			cin >>take_receipt;
+			if (take_receipt ==0)
+			menu();
+			else if (take_receipt==1 )
+			print ();
+			else 
+			{
+				cout <<"WRONG OUTPUT\nthe allowed values of take_receipt are 1 and 0 ";
+				confirm_state();
+			} 
+		}
+		void print (){
+		cout<<"your account balance is "<<balance;
+		cout<<"your account type is "<<type;
+		menu();
+		}
 
 		int getDeposit() {
 			int depositAmount;
