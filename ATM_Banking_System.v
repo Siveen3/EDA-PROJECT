@@ -4,8 +4,7 @@ input[13:0] password,
 input allowwithdraw,take_receipt,allow_transfer,
 input wire  [15:0] Pers_Account_No,
 input wire  [31:0] withdraw_amount,Transfer_Amount,
-output reg Transfer_Done, ATM_Usage_Finished, Balance_Shown, Deposited_Successfully, Withdrawed_Successfully, 
-Exchanged_Successfully, Fawry_Service_Done, Transferred_Successfully, Bank_Statement_Produced, Debt_Paid_Off;
+output reg Transfer_Done, ATM_Usage_Finished, Balance_Shown, Deposited_Successfully, Withdrawed_Successfully, Transferred_Successfully;
 // don't forget to add your outputs 7ader 7ader2
 );
 
@@ -23,7 +22,7 @@ parameter[3:0]  insert_card_state = 4'b0000,
                 withdraw_state    = 4'b0101,
                 deposit_state     = 4'b0110,
                 transfer_state    = 4'b0111,
-                display_state     = 4'b1000,
+                //display_state     = 4'b1000,
                 allow_withdraw_state = 4'b1001,
                 amount_state      = 4'b1010,
                 allow_transfer_state = 4'b1011,
@@ -142,12 +141,7 @@ parameter[3:0]  insert_card_state = 4'b0000,
                                 if (Money_Deposited == 1'b1)
                                     next_state = confirm_state;
                                 else
-                                    next_state = Deposit;
-                            end
-
-    display_state:          begin
-                                /////////////////////////////////////////
-                                next_state = Home;
+                                    next_state = home_state;
                             end
                                                         
     eject_card_state:       begin
@@ -172,11 +166,7 @@ parameter[3:0]  insert_card_state = 4'b0000,
                                 Balance_Shown             = 1'b1;
                                 Deposited_Successfully    = 1'b0;
                                 Withdrawed_Successfully   = 1'b0;
-                                Exchanged_Successfully    = 1'b0;
-                                Fawry_Service_Done        = 1'b0;
                                 Transferred_Successfully  = 1'b0;
-                                Bank_Statement_Produced   = 1'b0;
-                                Debt_Paid_Off             = 1'b0;
                             end
 
         deposit_state:      begin
@@ -184,11 +174,7 @@ parameter[3:0]  insert_card_state = 4'b0000,
                                 Balance_Shown             = 1'b0;
                                 Deposited_Successfully    = 1'b0;
                                 Withdrawed_Successfully   = 1'b0;
-                                Exchanged_Successfully    = 1'b0;
-                                Fawry_Service_Done        = 1'b0;
                                 Transferred_Successfully  = 1'b0;
-                                Bank_Statement_Produced   = 1'b0;
-                                Debt_Paid_Off             = 1'b0;
                             end
 
         eject_card_state:   begin
@@ -196,11 +182,7 @@ parameter[3:0]  insert_card_state = 4'b0000,
                                 Balance_Shown             = 1'b0;
                                 Deposited_Successfully    = 1'b0;
                                 Withdrawed_Successfully   = 1'b0;
-                                Exchanged_Successfully    = 1'b0;
-                                Fawry_Service_Done        = 1'b0;
                                 Transferred_Successfully  = 1'b0;
-                                Bank_Statement_Produced   = 1'b0;
-                                Debt_Paid_Off             = 1'b0;
                             end                    
 
         default:            begin
@@ -208,11 +190,7 @@ parameter[3:0]  insert_card_state = 4'b0000,
                                 Balance_Shown             = 1'b0;
                                 Deposited_Successfully    = 1'b0;
                                 Withdrawed_Successfully   = 1'b0;
-                                Exchanged_Successfully    = 1'b0;
-                                Fawry_Service_Done        = 1'b0;
                                 Transferred_Successfully  = 1'b0;
-                                Bank_Statement_Produced   = 1'b0;
-                                Debt_Paid_Off             = 1'b0;
                             end
     endcase
     end

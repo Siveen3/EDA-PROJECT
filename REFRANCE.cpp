@@ -59,6 +59,7 @@ bool proceed(string response) {
 
 }
 
+///////////////////////////////////////////////////////////////
 class AccountSettings {
 	private:			
 		int balance;	
@@ -67,20 +68,34 @@ class AccountSettings {
 		AccountSettings(){
 			this->balance = AccountDetails[1];
 		}
-
+		
+		void eject_card_state();
+		void withdraw_state();
+		int allow_withdraw_state();
+		void confirm_state();
+		void print();
+		void deposite_state();
+		void Transfer_state();
+		void Confirm_account_state();
+		void allow_transfer_state();
+		void balance_state();
+		
+		void eject_card_state() {
+			cout << "Thank you for being our client\nSee you soon\nCard Ejected\n\n";
+		}
+		
 		void withdraw_state(){
 			int allowwithdraw;
 			cout <<"if you want to allow withdraw enter 1 else enter 0";
-			cin>>allowwithdraw;
-			if (allowwithdraw=1)
-			allow_withdraw_state();
-			else if (allowwithdraw =0)
-			menu();
+			cin >> allowwithdraw;
+			if (allowwithdraw == 1)
+				allow_withdraw_state();
+			else if (allowwithdraw == 0)
+				menu();
 			else {
 				cout<<"ERROR allowed values are 1 and 0 only";
 				withdraw_state();
 			}
-
 		}
 
 		int allow_withdraw_state() {
@@ -123,12 +138,31 @@ class AccountSettings {
 			} 
 		}
 		
-		void print (){
+		void print() {
 		cout<<"your account balance is:	 "<<balance;
 		cout<<"your account type is   :	 "<<type;
 		menu();
 		}
 
+		void deposite_state() {
+			int depositAmount;
+			cout << "Please enter an amount to deposit:\n";
+			cin >> depositAmount;
+			
+			this->balance += depositAmount;
+			cout << "$" << depositAmount << " was deposit successfully\n";
+			
+			char next;
+			cout << "Back to menue (y\n)? ";
+			cin >> next;
+			
+			if (next == 'y' || next == 'Y')
+				menu();
+			else 
+				eject_card_state();
+		}
+		
+	/*
 		int getDeposit() {
 			int depositAmount;
 			cout << "Please enter an amount to deposit:\n" << endl;
@@ -144,7 +178,8 @@ class AccountSettings {
 			 
 			return 0;
 		}
-
+	*/
+	
 		void Transfer_state() {
 			int  allow_transfer;
 			// int TransferTo = this->type== 1 ? 2 : 1;
@@ -158,39 +193,61 @@ class AccountSettings {
 		      cout<<"Please select 1 or 0 only";
 		      Transfer_state();}
 		}
+		
 		void Confirm_account_state(){
-			cout<< "enter your account number for verification";
+			cout << "Enter your account number for verification";
 				int account_num;
 				cin >> account_num;
 			if(account_num == AccountDetails[3]){
-				cout<< "Verifired";
+				cout << "Verifired";
 				allow_transfer_state();}
 			else{
-				cout<<" incorrect account ID";
+				cout << "Incorrect account ID";
 				Transfer_state();
-			}}
+			}
+		}
+			
 		void allow_transfer_state(){
 			int AmountTransfer;
 			cout << "Enter amount to transfer "<< endl;
 			cin >>  AmountTransfer;
 			if(AmountTransfer <= AccountDetails[2]){
-			AccountDetails[2] = this->balance -= AmountTransfer;
-				      cout << "$" << AmountTransfer << " has been transfered and deducted from your account" << endl;
-					  confirm_state();}
-		    else {
-				      cout << "Insuffient funds." << endl;
-				      Transfer_state();}
+				AccountDetails[2] = this->balance -= AmountTransfer;
+				cout << "$" << AmountTransfer << " has been transfered and deducted from your account" << endl;
+				confirm_state();
+			} else {
+				cout << "Insuffient funds." << endl;
+				Transfer_state();}
 		}
 
-		int getBalance() {
-			string confirmBalance;
+		void balance_state() {
+			char print;
+			cout << "Your account balance is $" << this->balance << endl;
+			cout << "Do you want to print the account balance (y/n)? ";
+			cin >> print;
+			if (print == 'y' || print == 'Y')
+				print();
+			else {
+				char next;
+				cout << "Back to menue (y\n)? ";
+				cin >> next;
+				
+				if (next == 'y' || next == 'Y')
+					menu();
+				else 
+					eject_card_state();	
+			}
+		}
+		
+	/*		
+		void getBalance() {	
+			char confirmBalance, response;
 			// get the account type, and return balance
 			cout << "Would you like to check your "<< AccountType[this->type] << " account balance? (y/n)\n" << endl;
 			cin >> confirmBalance;
-			if(confirmBalance=="y" || confirmBalance=="Y"){
+			if(confirmBalance=='y' || confirmBalance=='Y'){
 				cout << "Your account balance is: $" << this->balance << endl;
 			} 
-			
 			cout << "\n\nWould you like to continue (y/n)?\n";
 			cin >> response;
 
@@ -200,6 +257,7 @@ class AccountSettings {
 
 			return 0;
 		}
+	*/
 };
 
 void account(int option) {
@@ -253,6 +311,7 @@ void menu() {
         cout << "Error: Timed out waiting for user input." << endl;
 		//call exit function here
     }
+	
 }
 
 
