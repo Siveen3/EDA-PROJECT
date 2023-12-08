@@ -1,7 +1,7 @@
 module ATM (
 input[2:0] opcode,
 input[3:0] password,
-input allowwithdraw,take_receipt,
+input allowwithdraw,take_receipt,allow_transfer,
 input wire  [15:0] Pers_Account_No,
 input wire  [31:0] withdraw_amount,Transfer_Amount,
 output reg Transfer_Done// don't forget to add your outputs 7ader
@@ -107,7 +107,12 @@ parameter[3:0]  insert_card_state = 4'b0000,
                                     next_state=home_state;
                                 end
     transfer_state     		: begin
-									next_state = Confirm_account_state ;			  
+                                if(allow_transfer==1'b1)
+									next_state = Confirm_account_state ;
+                                else if(allow_transfer==1'b0)
+                                    next_state = home_state ;	
+                                else 
+                                	   next_state = transfer_state ;
 								end
 							
     Confirm_account_state   : begin
@@ -119,7 +124,7 @@ parameter[3:0]  insert_card_state = 4'b0000,
 							
     allow_transfer_state     	: begin
 								if(Transfer_Amount <= existing_amount)
-									next_state = Confirm_Transfer ;
+									next_state = confirm_state ;
 								else
 									next_state = allow_transfer_state ;			  
 								end
