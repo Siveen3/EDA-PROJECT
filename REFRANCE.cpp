@@ -23,18 +23,18 @@ INSTRUCTIONS:
 #include <string>
 #include <chrono>
 #include <thread>
+using namespace std;
+
 // FUNCTIONS
 void menu();
 void account(int option);
 
-using namespace std;
-string AccountType[] = {"", "CHECKINGS", "SAVINGS"};
+//string AccountType[] = {"", "CHECKINGS", "SAVINGS"};
 string response;
 
 int AccountDetails[] = {
-	1234,		// pin number
-	100,		// checking account balance
-	600,		// savings account balance
+	8030,		// pin number
+	5000	    // Balance
 };
 
 bool validatePin(int pin) {
@@ -58,18 +58,14 @@ bool proceed(string response) {
 }
 
 class AccountSettings {
-	private:
-		int type;		// account type
-		int balance;	// account balance
-	public:
+	private:			
+		int balance;	
 	
-
-		AccountSettings(int type) {
-			// type 1 = checkings
-			// type 2 = savings
-			this->type = type;
-			this->balance = AccountDetails[this->type];
+	public:
+		AccountSettings(){
+			this->balance = AccountDetails[1];
 		}
+
 		void withdraw_state(){
 			int allowwithdraw;
 			cout <<"if you want to allow withdraw enter 1 else enter 0";
@@ -84,6 +80,7 @@ class AccountSettings {
 			}
 
 		}
+
 		int allow_withdraw_state() {
 			int withdraw_amount;
 			cout << "Please enter amount to withdrawn:\n " << endl;
@@ -108,6 +105,7 @@ class AccountSettings {
 
 			return 0;
 		}
+
 		void confirm_state(){
 			cout<<"if you want to take a receipt enter 0 else enter 1";
 			int take_receipt;
@@ -122,6 +120,7 @@ class AccountSettings {
 				confirm_state();
 			} 
 		}
+		
 		void print (){
 		cout<<"your account balance is:	 "<<balance;
 		cout<<"your account type is   :	 "<<type;
@@ -183,7 +182,7 @@ class AccountSettings {
 			cout << "\n\nWould you like to continue (y/n)?\n";
 			cin >> response;
 
-			if (proceed(response)) {
+			if (proceed(response)) {        
 				account(this->type); // return to account menu
 			}
 
@@ -192,21 +191,10 @@ class AccountSettings {
 };
 
 void account(int option) {
-		// account option = 1 (checkings)
-		// account option = 2 (savings)
-			cout << "\n\n" <<AccountType[option] << "--\n\t1. Check balance"
-				<<"\n\t2. Withdraw from " << AccountType[option] 
-				<<"\n\t3. Deposit to " << AccountType[option] 
-				<<"\n\t4. Transfer " 
-				<<"\n\t5. --Return to Menu." << endl;
-
+    if(option >= 1 && option <= 4){
 		// Pass in account type
-		AccountSettings Account(option); 
-
-		int selectMenu;
-		cin >> selectMenu;
-		
-		switch(selectMenu){
+		AccountSettings Account; 
+		switch(option){
 			case 1:
 				cout << Account.getBalance();
 				break;
@@ -219,74 +207,60 @@ void account(int option) {
 			case 4:
 				cout << Account.getTransfer();
 				break;
-			case 5:
-				menu(); // return to main menu
-				break;
-			default:
-				cout << "Would you like to continue (y/n)\n";
-				cin >> response;
-				proceed(response);
-			
-				if (proceed(response)) {
-					menu(); // return to main menu
-				} 
-				break;
 		}
+	}
+	else{
+		cout << "Invalid input.. goint back to ";
+	}
 }
-		bool waitForUserInput(int maxSeconds) {
-			auto startTime = std::chrono::system_clock::now();
-			std::this_thread::sleep_for(std::chrono::seconds(maxSeconds));
-			auto endTime = std::chrono::system_clock::now();
-			auto elapsedSeconds = std::chrono::duration_cast<std::chrono::seconds>(endTime - startTime).count();
-			return elapsedSeconds < maxSeconds;
-		}
-		void menu() {
-			int option;
-			cout << "\n\nMain Menu--" <<endl;
-			cout << "\tPlease make a selection. " << endl;
-			cout << "\t1. Checkings \n\t2. Savings \n\t3. Exit" << endl;
-		int maxSeconds=10;
 
+bool waitForUserInput(int maxSeconds) {
+	auto startTime = chrono::system_clock::now();
+	this_thread::sleep_for(chrono::seconds(maxSeconds));
+	auto endTime = chrono::system_clock::now();
+	auto elapsedSeconds = chrono::duration_cast<chrono::seconds>(endTime - startTime).count();
+	return elapsedSeconds < maxSeconds;
+}
 
-    std::cout << "Enter an option within " << maxSeconds << " seconds:" << std::endl;
+void menu() {
+	int option;
+	cout << "Main Menu--" <<endl;
+	cout << "\tPlease make a selection. " << endl;
+	cout << "\n\t1. Check balance"
+				<<"\n\t2. Withdraw"
+				<<"\n\t3. Deposit"
+				<<"\n\t4. Transfer "<< endl;
+
+	int maxSeconds=10;
+    cout << "Enter an option within " << maxSeconds << " seconds:" << endl;
 
     if (waitForUserInput(maxSeconds)) {
-        std::cin >> option;
-        std::cout << "You entered: " << option << std::endl;
+        cin >> option;
+        account(option);
     } else {
-        std::cout << "Error: Timed out waiting for user input." << std::endl;
+        cout << "Error: Timed out waiting for user input." << endl;
+		//call exit function here
     }
-	switch(option){
-		case 1: account(option); // checkings
-			break;
-		case 2: account(option); // savings
-			break;
-		default:
-			cout << "Would you like to continue (y/n)\n";
-			cin >> response;
-			proceed(response);
-			
-			if (proceed(response)) {
-				menu();
-			} 
-			break;
-	}
 }
 
 
 // Begin MAIN
 int main() {
-	int pin;
-	cout << "Welcome to Bank of Programming.\n\tPlease enter your pin number to access your account:" << endl;
-	do {
+	cout << "\nWelcome to the Bank.\n\tPlease enter your pin number to access your account:" << endl;
+	int pin, chances = 0;
+
+	while(chances < 3){
 		cin >> pin;
 
 		if(validatePin(pin)) {
+			cout << endl;
 			menu(); // continue to main menu
+			break;
 		} else {
 			cout << "Invalid pin. Please enter pin number:" << endl; 
+			chances++;
 		}
-	} while (!validatePin(pin));
+	}
 
 	return 0;
 }

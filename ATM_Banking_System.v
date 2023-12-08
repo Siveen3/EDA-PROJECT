@@ -1,15 +1,15 @@
 module ATM (
 input[2:0] opcode,
-input[3:0] password,
+input[13:0] password,
 input allowwithdraw,take_receipt,allow_transfer,
 input wire  [15:0] Pers_Account_No,
 input wire  [31:0] withdraw_amount,Transfer_Amount,
 output reg Transfer_Done// don't forget to add your outputs 7ader
 );
 
-reg[1:0] chances = 2'b00;`
-reg[3:0] visa_password = 4'b1110;
 reg[3:0] current_state, next_state;
+reg[1:0] chances = 2'b00;
+reg[3:0] visa_password = 13'd8030;
 reg [31:0] existing_amount = 32'h000186A0;
 reg [15:0] Correct_Account_No = 16'hD903;
 
@@ -59,7 +59,7 @@ parameter[3:0]  insert_card_state = 4'b0000,
 					        next_state = pin_state;
                         end
 				        else 
-					        next_state = home_state ;	  
+					        next_state = home_state;	  
 			        end
     
     home_state      : begin
@@ -78,26 +78,26 @@ parameter[3:0]  insert_card_state = 4'b0000,
                     end
     withdraw_state     		: begin
 								if(allowwithdraw == 1'b1)
-									next_state =allow_withdraw_state ;
+									next_state =allow_withdraw_state;
 								else if (allowwithdraw == 1'b0)
-									next_state =home_state ;
+									next_state =home_state;
 
 								else
-									next_state = withdraw_state ;			  
+									next_state = withdraw_state;			  
 								end
     allow_withdraw_state    :begin 
                                 if(withdraw_amount > existing_amount)
-									next_state = withdraw_state ;
+									next_state = withdraw_state;
 								else  (withdraw_amount <= existing_amount)
-									next_state = confirm_state ;
+									next_state = confirm_state;
                                 
 
                                 end   
     confirm_state            :begin 
                                 if(take_receipt == 1'b0)
-									next_state = home_state ;
+									next_state = home_state;
 								else if  (take_receipt == 1'b1)
-									next_state = print_state ;
+									next_state = print_state;
 								else 
                                     next_state=confirm_state;	
 
@@ -108,25 +108,25 @@ parameter[3:0]  insert_card_state = 4'b0000,
                                 end
     transfer_state     		: begin
                                 if(allow_transfer==1'b1)
-									next_state = Confirm_account_state ;
+									next_state = Confirm_account_state;
                                 else if(allow_transfer==1'b0)
-                                    next_state = home_state ;	
+                                    next_state = home_state;	
                                 else 
-                                	   next_state = transfer_state ;
+                                	   next_state = transfer_state;
 								end
 							
     Confirm_account_state   : begin
 								if(Pers_Account_No != Correct_Account_No)
-									next_state = Confirm_account_state ;
+									next_state = Confirm_account_state;
 								else 
-									next_state = allow_transfer_state ;			  
+									next_state = allow_transfer_state;			  
 								end
 							
     allow_transfer_state     	: begin
 								if(Transfer_Amount <= existing_amount)
-									next_state = confirm_state ;
+									next_state = confirm_state;
 								else
-									next_state = allow_transfer_state ;			  
+									next_state = allow_transfer_state;			  
 								end
     endcase
     end
