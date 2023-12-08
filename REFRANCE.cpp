@@ -34,7 +34,9 @@ string response;
 
 int AccountDetails[] = {
 	8030,		// pin number
-	5000	    // Balance
+	5000,	    // Balance
+	50602,      // accout id
+
 };
 
 bool validatePin(int pin) {
@@ -143,31 +145,41 @@ class AccountSettings {
 			return 0;
 		}
 
-		int getTransfer() {
+		void Transfer_state() {
+			int  allow_transfer;
+			// int TransferTo = this->type== 1 ? 2 : 1;
+            cout<<"Welcome to Transfer State  if you want to continue press 1 if you want to return home press 0";
+            cin>> allow_transfer;
+			if( allow_transfer==1)
+			 Confirm_account_state();
+		    else if(allow_transfer== 0)
+		      menu();
+		    else{
+		      cout<<"Please select 1 or 0 only";
+		      Transfer_state();}
+		}
+		void Confirm_account_state(){
+			cout<< "enter your account number for verification";
+				int account_num;
+				cin >> account_num;
+			if(account_num == AccountDetails[3]){
+				cout<< "Verifired";
+				allow_transfer_state();}
+			else{
+				cout<<" incorrect account ID";
+				Transfer_state();
+			}}
+		void allow_transfer_state(){
 			int AmountTransfer;
-			int TransferTo = this->type== 1 ? 2 : 1;
-
-			cout << "Enter amount to transfer to your "<< AccountType[TransferTo] << " account."<< endl;
+			cout << "Enter amount to transfer "<< endl;
 			cin >>  AmountTransfer;
-
-			if(AmountTransfer <= AccountDetails[this->type]) {
-				// update the current account balance in the selected account
-				int NewBalance = this->balance -= AmountTransfer;
-				AccountDetails[this->type] = NewBalance;
-
-				// Set the new transfered amount to transfered account
-				int TransferedAmount = AccountDetails[TransferTo] += AmountTransfer;
-				AccountDetails[TransferTo] = TransferedAmount;
-
-				cout << "$" << AmountTransfer << " has been transfered to your "<< AccountType[TransferTo] << " account." << endl;
-				getBalance();
-
-			} else {
-				cout << "Insuffient funds." << endl;
-				getBalance();
-			}
-
-			return 0;
+			if(AmountTransfer <= AccountDetails[2]){
+			AccountDetails[2] = this->balance -= AmountTransfer;
+				      cout << "$" << AmountTransfer << " has been transfered and deducted from your account" << endl;
+					  confirm_state();}
+		    else {
+				      cout << "Insuffient funds." << endl;
+				      Transfer_state();}
 		}
 
 		int getBalance() {
