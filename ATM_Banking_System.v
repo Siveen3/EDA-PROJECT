@@ -4,7 +4,7 @@ input[13:0] password,
 input allowwithdraw,take_receipt,allow_transfer,
 input wire  [15:0] Pers_Account_No,
 input wire  [31:0] withdraw_amount,Transfer_Amount,
-output reg Transfer_Done, ATM_Usage_Finished, Balance_Shown, Deposited_Successfully, Withdrawed_Successfully, Transferred_Successfully;
+output reg Transfer_Done, ATM_Usage_Finished, Balance_Shown, Deposited_Successfully, Withdrawed_Successfully;
 // don't forget to add your outputs 7ader 7ader2
 );
 
@@ -14,21 +14,21 @@ reg[3:0] visa_password = 13'd8030;
 reg [31:0] existing_amount = 32'h000186A0;
 reg [15:0] Correct_Account_No = 16'hD903;
 
-parameter[3:0]  insert_card_state = 4'b0000,
-                language_state    = 4'b0001,
-                pin_state         = 4'b0010,
-                home_state        = 4'b0011,
-                balance_state     = 4'b0100,
-                withdraw_state    = 4'b0101,
-                deposit_state     = 4'b0110,
-                transfer_state    = 4'b0111,
+parameter[3:0]  insert_card_state   = 4'b0000,
+                language_state      = 4'b0001,
+                pin_state           = 4'b0010,
+                home_state          = 4'b0011,
+                balance_state       = 4'b0100,
+                withdraw_state      = 4'b0101,
+                deposit_state       = 4'b0110,
+                transfer_state      = 4'b0111,
                 //display_state     = 4'b1000,
-                allow_withdraw_state = 4'b1001,
-                amount_state      = 4'b1010,
-                allow_transfer_state = 4'b1011,
-                confirm_state      = 4'b1100,
-                print_state = 4'b1101,
-                eject_card_state = 4'b1110,
+                allow_withdraw_state= 4'b1001,
+                amount_state        = 4'b1010,
+                allow_transfer_state= 4'b1011,
+                confirm_state       = 4'b1100,
+                print_state         = 4'b1101,
+                eject_card_state    = 4'b1110,
                 Confirm_account_state=4'b1111;
 					
 					 
@@ -102,11 +102,13 @@ parameter[3:0]  insert_card_state = 4'b0000,
 								else 
                                     next_state=confirm_state;	
 
-                                end      
+                                end  
+
     print_state             :begin
 
-                                    next_state=home_state;
+                                    next_state = home_state;
                                 end
+
     transfer_state     		: begin
                                 if(allow_transfer==1'b1)
 									next_state = Confirm_account_state;
@@ -132,9 +134,9 @@ parameter[3:0]  insert_card_state = 4'b0000,
 
     balance_state:          begin
                                 if (Receipt == 1'b1)
-                                    next_state = Print;
+                                    next_state = print_state;
                                 else
-                                    next_state = display;
+                                    next_state = home_state;
                             end   
 
     deposit_state:          begin
@@ -144,9 +146,7 @@ parameter[3:0]  insert_card_state = 4'b0000,
                                     next_state = home_state;
                             end
                                                         
-    eject_card_state:       begin
-                                next_state = Idle;
-                            end
+    eject_card_state:           next_state = Idle;
 
     default:                    next_state = Idle;
 
@@ -159,22 +159,46 @@ parameter[3:0]  insert_card_state = 4'b0000,
     begin
     case(current_state)
        
+        insert_card_state:
+        eject_card_state:   begin
+                                ATM_Usage_Finished        = 1'b1;
+                                Balance_Shown             = 1'b0;
+                                Deposited_Successfully    = 1'b0;
+                                Withdrawed_Successfully   = 1'b0;
+                                Transfer_Done             = 1'b0;
 
+        withdraw_state:     begin
+                                ATM_Usage_Finished        = 1'b0;
+                                Balance_Shown             = 1'b0;
+                                Deposited_Successfully    = 1'b0;
+                                Withdrawed_Successfully   = 1'b1;
+                                Transfer_Done             = 1'b0;
+                            end
+
+
+        transfer_state:     begin
+                                ATM_Usage_Finished        = 1'b0;
+                                Balance_Shown             = 1'b0;
+                                Deposited_Successfully    = 1'b0;
+                                Withdrawed_Successfully   = 1'b0;
+                                Transfer_Done             = 1'b1;
+                            end
+                    
 
         balance_state:      begin
                                 ATM_Usage_Finished        = 1'b0;
                                 Balance_Shown             = 1'b1;
                                 Deposited_Successfully    = 1'b0;
                                 Withdrawed_Successfully   = 1'b0;
-                                Transferred_Successfully  = 1'b0;
+                                Transfer_Done             = 1'b0;
                             end
 
         deposit_state:      begin
                                 ATM_Usage_Finished        = 1'b0;
                                 Balance_Shown             = 1'b0;
-                                Deposited_Successfully    = 1'b0;
+                                Deposited_Successfully    = 1'b1;
                                 Withdrawed_Successfully   = 1'b0;
-                                Transferred_Successfully  = 1'b0;
+                                Transfer_Done             = 1'b0;
                             end
 
         eject_card_state:   begin
@@ -182,7 +206,7 @@ parameter[3:0]  insert_card_state = 4'b0000,
                                 Balance_Shown             = 1'b0;
                                 Deposited_Successfully    = 1'b0;
                                 Withdrawed_Successfully   = 1'b0;
-                                Transferred_Successfully  = 1'b0;
+                                Transfer_Done             = 1'b0;
                             end                    
 
         default:            begin
@@ -190,7 +214,7 @@ parameter[3:0]  insert_card_state = 4'b0000,
                                 Balance_Shown             = 1'b0;
                                 Deposited_Successfully    = 1'b0;
                                 Withdrawed_Successfully   = 1'b0;
-                                Transferred_Successfully  = 1'b0;
+                                Transfer_Done             = 1'b0;
                             end
     endcase
     end
