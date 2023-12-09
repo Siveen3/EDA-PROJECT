@@ -25,29 +25,45 @@ INSTRUCTIONS:
 #include <thread>
 using namespace std;
 
+
+int account_sn;
 // FUNCTIONS
 void home();
 void account(int option);
 
 //string AccountType[] = {"", "CHECKINGS", "SAVINGS"};
 string response;
-
+/*
 int AccountDetails[] = {
+	506021,      // accout id
 	8030,		// pin number
 	5000,	    // Balance
-	50602,      // accout id
 
+};
+*/
+
+int numberOfAccounts = 4;
+int accounts[numberOfAccounts][3] = {
+	{50602, 8030, 5000},
+	{28764, 1215, 8000},
+	{12825, 1234, 7500}, 
+	{34345, 3333, 3000},
 };
 
 
 bool validatePin(int pin) {
-	if (pin == AccountDetails[0]) {
-		return true;
-	} else {
-		return false;
+	for(int i = 0; i < numberOfAccounts; i++){
+		if (pin == AccountDetails[i][1]) {
+			account_sn = i;
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
 
+
+// useless..?
 bool proceed(string response) {
 	if(response =="y" || response == "Y"){
 		return true;
@@ -60,14 +76,27 @@ bool proceed(string response) {
 
 }
 
+//useless?
+bool waitForUserInput(int maxSeconds) {
+	auto startTime = chrono::system_clock::now();
+	this_thread::sleep_for(chrono::seconds(maxSeconds));
+	auto endTime = chrono::system_clock::now();
+	auto elapsedSeconds = chrono::duration_cast<chrono::seconds>(endTime - startTime).count();
+	return elapsedSeconds < maxSeconds;
+}
+
 ///////////////////////////////////////////////////////////////
 class AccountSettings {
-	private:			
+	private:		
+		int account_num;
+		int pin;	
 		int balance;	
 	
 	public:
 		AccountSettings(){
-			this->balance = AccountDetails[1];
+			this->account_num = AccountDetails[account_sn][0];
+			this->pin = AccountDetails[account_sn][1];
+			this->balance = AccountDetails[account_sn][2];
 		}
 		
 		void eject_card_state();
@@ -80,6 +109,11 @@ class AccountSettings {
 		void Confirm_account_state();
 		void allow_transfer_state();
 		void balance_state();
+		void change_pin();
+
+		void change_pin(int newPin){
+			this->pin = newPin;
+		}
 		
 		void eject_card_state() {
 			cout << "Thank you for being our client\nSee you soon\nCard Ejected\n\n";
@@ -140,9 +174,9 @@ class AccountSettings {
 		}
 		
 		void print() {
-		cout<<"your account balance is:	 "<<balance;
-		cout<<"your account type is   :	 "<<type;
-		home();
+			cout<<"your account balance is:	 "<<balance;
+			cout<<"your account type is   :	 "<<type;
+			home();
 		}
 
 		void deposite_state() {
@@ -199,7 +233,7 @@ class AccountSettings {
 			cout << "Enter your account number for verification";
 				int account_num;
 				cin >> account_num;
-			if(account_num == AccountDetails[3]){
+			if(account_num == this->account_num){
 				cout << "Verifired";
 				allow_transfer_state();}
 			else{
@@ -262,7 +296,7 @@ class AccountSettings {
 };
 
 void account(int option) {
-    if(option >= 1 && option <= 4){
+    if(option >= 1 && option <= 5){
 		// Pass in account type
 		AccountSettings Account; 
 		switch(option){
@@ -278,6 +312,13 @@ void account(int option) {
 			case 4:
 				cout << Account.getTransfer();
 				break;
+			case 5:
+				int newPin;
+				cout << "Enter the new pin";
+				cin >> newPin;
+				cout << Account.changePin(newPin);
+				break;
+				
 		}
 	}
 	else{
@@ -285,13 +326,6 @@ void account(int option) {
 	}
 }
 
-bool waitForUserInput(int maxSeconds) {
-	auto startTime = chrono::system_clock::now();
-	this_thread::sleep_for(chrono::seconds(maxSeconds));
-	auto endTime = chrono::system_clock::now();
-	auto elapsedSeconds = chrono::duration_cast<chrono::seconds>(endTime - startTime).count();
-	return elapsedSeconds < maxSeconds;
-}
 
 void home() {
 	int option;
@@ -300,12 +334,13 @@ void home() {
 	cout << "\n\t1. Check balance"
 				<<"\n\t2. Withdraw"
 				<<"\n\t3. Deposit"
-				<<"\n\t4. Transfer "<< endl;
+				<<"\n\t4. Transfer"
+				<<"\n\t5. Change Pin" << endl;
 
-	int maxSeconds=10;
+	int maxSeconds = 10;
     cout << "Enter an option within " << maxSeconds << " seconds:" << endl;
 
-    if (waitForUserInput(maxSeconds)) {
+    if (waitForUserInput(maxSeconds)) {  //5alas?
         cin >> option;
         account(option);
     } else {

@@ -1,6 +1,6 @@
-// Timer - how to handle it ..c++
-// lazem files?? HARDCODED :0
-// How to know which account is currently running even though we just insert the visa_password
+// Timer - how to handle it ..c++  ::: increment counter in clock / check with 0 or 1
+// lazem files?? HARDCODED :0 ::: we can insert the hardcoded data in verilog and c++ both
+// How to know which account is currently running even though we just insert the visa_password ::: enter account number
 // C++
 // lw hardcoded, 2D Arrays or objects?
 // how to link?
@@ -18,6 +18,7 @@
 
 
 module ATM (
+input[16:0] account_number,
 input[2:0] opcode,
 input[13:0] password,
 input allowwithdraw,take_receipt,allow_transfer,
@@ -33,23 +34,24 @@ reg[3:0] visa_password = 13'd8030;
 reg [31:0] existing_amount = 32'h000186A0;
 reg [15:0] Correct_Account_No = 16'hD903;
 
-parameter[3:0]  idle_state ////////////////////////////////////
-                insert_card_state   = 5'b00000,
-                language_state      = 5'b00001,
-                pin_state           = 5'b00010,
-                home_state          = 5'b00011,
-                balance_state       = 5'b00100,
-                withdraw_state      = 5'b00101,
-                deposit_state       = 5'b00110,
-                transfer_state      = 5'b00111,
-                //display_state     = 5'b01000,
-                allow_withdraw_state= 5'b01001,
-                amount_state        = 5'b01010,
-                allow_transfer_state= 5'b01011,
-                confirm_state       = 5'b01100,
-                print_state         = 5'b01101,
-                eject_card_state    = 5'b01110,
-                Confirm_account_state=5'b01111;
+parameter[3:0]  idle_state              = 5'b00000;
+                insert_card_state       = 5'b00001,
+                language_state          = 5'b00010,
+                pin_state               = 5'b00011,
+                home_state              = 5'b00100,
+                balance_state           = 5'b00101,
+                withdraw_state          = 5'b00110,
+                deposit_state           = 5'b00111,
+                transfer_state          = 5'b01000,
+                //display_state         = 5'b01001,
+                allow_withdraw_state    = 5'b01010,
+                amount_state            = 5'b01011,
+                allow_transfer_state    = 5'b01100,
+                confirm_state           = 5'b01101,
+                print_state             = 5'b01110,
+                eject_card_state        = 5'b01111,
+                Confirm_account_state   = 5'b10000,
+                change_pin              = 5'b10001;
 					
 					 
 
@@ -67,7 +69,11 @@ parameter[3:0]  idle_state ////////////////////////////////////
     always @(*)
     begin
     case(current_state)
-        
+    idle_state : begin
+                    if(){
+                        next_state 
+                    }
+    insert_card_state :
     language_state : begin
                         next_state = pin_state;		  
                     end
@@ -84,19 +90,26 @@ parameter[3:0]  idle_state ////////////////////////////////////
 			        end
     
     home_state      : begin
-                        if(opcode == 4'b000)
+                        if(opcode == 3'b000)
                             next_state = eject_card_state;
-                        else if(opcode == 4'b001)
+                        else if(opcode == 3'b001)
                             next_state = balance_state;
-                        else if(opcode == 4'b010)
+                        else if(opcode == 3'b010)
                             next_state = withdraw_state;
-                        else if(opcode == 4'b011)
+                        else if(opcode == 3'b011)
                             next_state = deposit_state;
-                        else if(opcode == 4'b100)
+                        else if(opcode == 3'b100)
                             next_state = transfer_state;
+                        else if(opcode == 3'b101)
+                            next_state = change_pin;
                         else 
                             next_state = home_state;
                     end
+
+    change_pin  : begin
+
+                end
+
     withdraw_state     		: begin
 								if(allowwithdraw == 1'b1)
 									next_state =allow_withdraw_state;
