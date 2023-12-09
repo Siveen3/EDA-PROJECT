@@ -1,3 +1,22 @@
+// Timer - how to handle it ..c++
+// lazem files?? HARDCODED :0
+// How to know which account is currently running even though we just insert the visa_password
+// C++
+// lw hardcoded, 2D Arrays or objects?
+// how to link?
+
+
+
+
+
+//--------------------------------------
+// CONFIRM withdraw (check)
+// CONFIRM transfer (check)
+// CONFIRM deposit
+// CONFIRM balance
+// 3 chances in Transfer
+
+
 module ATM (
 input[2:0] opcode,
 input[13:0] password,
@@ -14,22 +33,23 @@ reg[3:0] visa_password = 13'd8030;
 reg [31:0] existing_amount = 32'h000186A0;
 reg [15:0] Correct_Account_No = 16'hD903;
 
-parameter[3:0]  insert_card_state   = 4'b0000,
-                language_state      = 4'b0001,
-                pin_state           = 4'b0010,
-                home_state          = 4'b0011,
-                balance_state       = 4'b0100,
-                withdraw_state      = 4'b0101,
-                deposit_state       = 4'b0110,
-                transfer_state      = 4'b0111,
-                //display_state     = 4'b1000,
-                allow_withdraw_state= 4'b1001,
-                amount_state        = 4'b1010,
-                allow_transfer_state= 4'b1011,
-                confirm_state       = 4'b1100,
-                print_state         = 4'b1101,
-                eject_card_state    = 4'b1110,
-                Confirm_account_state=4'b1111;
+parameter[3:0]  idle_state ////////////////////////////////////
+                insert_card_state   = 5'b00000,
+                language_state      = 5'b00001,
+                pin_state           = 5'b00010,
+                home_state          = 5'b00011,
+                balance_state       = 5'b00100,
+                withdraw_state      = 5'b00101,
+                deposit_state       = 5'b00110,
+                transfer_state      = 5'b00111,
+                //display_state     = 5'b01000,
+                allow_withdraw_state= 5'b01001,
+                amount_state        = 5'b01010,
+                allow_transfer_state= 5'b01011,
+                confirm_state       = 5'b01100,
+                print_state         = 5'b01101,
+                eject_card_state    = 5'b01110,
+                Confirm_account_state=5'b01111;
 					
 					 
 
@@ -81,7 +101,7 @@ parameter[3:0]  insert_card_state   = 4'b0000,
 								if(allowwithdraw == 1'b1)
 									next_state =allow_withdraw_state;
 								else if (allowwithdraw == 1'b0)
-									next_state =home_state;
+									next_state = home_state;
 
 								else
 									next_state = withdraw_state;			  
@@ -89,7 +109,7 @@ parameter[3:0]  insert_card_state   = 4'b0000,
     allow_withdraw_state    :begin 
                                 if(withdraw_amount > existing_amount)
 									next_state = withdraw_state;
-								else  (withdraw_amount <= existing_amount)
+								else if (withdraw_amount <= existing_amount)
 									next_state = confirm_state;
                                 
 
