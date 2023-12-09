@@ -43,7 +43,7 @@ parameter[3:0]  idle_state              = 5'b00000;
                 withdraw_state          = 5'b00110,
                 deposit_state           = 5'b00111,
                 transfer_state          = 5'b01000,
-                //display_state         = 5'b01001,
+                confirm_diposit_state   = 5'b01001,
                 allow_withdraw_state    = 5'b01010,
                 amount_state            = 5'b01011,
                 allow_transfer_state    = 5'b01100,
@@ -52,6 +52,7 @@ parameter[3:0]  idle_state              = 5'b00000;
                 eject_card_state        = 5'b01111,
                 Confirm_account_state   = 5'b10000,
                 change_pin              = 5'b10001;
+                confirm_balance_state   = 5'b10010;
 					
 					 
 
@@ -172,13 +173,27 @@ parameter[3:0]  idle_state              = 5'b00000;
                                     next_state = home_state;
                             end   
 
+    confirm_balance_state:  begin
+                                if (take_receipt == 1'b1)
+                                    next_state = print_state;
+                                else
+                                    next_state = home_state;
+                            end                        
+
     deposit_state:          begin
                                 if (Money_Deposited == 1'b1)
                                     next_state = confirm_state;
                                 else
                                     next_state = home_state;
                             end
-                                                        
+    
+    confirm_diposit_state:  begin
+                                if (take_receipt == 1'b1)
+                                    next_state = print_state;
+                                else
+                                    next_state = home_state;
+                            end 
+
     eject_card_state:           next_state = Idle;
 
     default:                    next_state = Idle;
