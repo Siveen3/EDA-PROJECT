@@ -25,35 +25,31 @@ INSTRUCTIONS:
 #include <thread>
 using namespace std;
 
-
+//global variable
 int account_sn;
+const int numberOfAccounts = 4;
+
+
 // FUNCTIONS
 void home();
 void account(int option);
 
 //string AccountType[] = {"", "CHECKINGS", "SAVINGS"};
-string response;
+char response;
 /*
 int AccountDetails[] = {
-	506021,      // accout id
+	506021,      // accout number
 	8030,		// pin number
 	5000,	    // Balance
 
 };
 */
 
-int numberOfAccounts = 4;
-int accounts[numberOfAccounts][3] = {
-	{50602, 8030, 5000},
-	{28764, 1215, 8000},
-	{12825, 1234, 7500}, 
-	{34345, 3333, 3000},
-};
 
 
 bool validatePin(int pin) {
 	for(int i = 0; i < numberOfAccounts; i++){
-		if (pin == AccountDetails[i][1]) {
+		if (pin == accounts[i][1]) {
 			account_sn = i;
 			return true;
 		} else {
@@ -64,16 +60,17 @@ bool validatePin(int pin) {
 
 
 // useless..?
-bool proceed(string response) {
-	if(response =="y" || response == "Y"){
-		return true;
-	} else if(response == "n" || response == "N"){
-		string exit;
-		cout << "\n\n\n\t Thank you for banking with us.";
-		cin >> exit;
-		return false;
+bool proceed(char response) {
+	while(true){
+		if(response =="y" || response == "Y"){
+			return true;
+		} else if(response == "n" || response == "N"){
+			return false;
+		}
+		else{
+			cout << "\nYou must type either Y or N"<<endl;
+		}
 	}
-
 }
 
 //useless?
@@ -88,104 +85,86 @@ bool waitForUserInput(int maxSeconds) {
 ///////////////////////////////////////////////////////////////
 class AccountSettings {
 	private:		
-		int account_num;
-		int pin;	
-		int balance;	
+		int* account_num;
+		int* pin;	
+		int* balance;	
 	
 	public:
 		AccountSettings(){
-			this->account_num = AccountDetails[account_sn][0];
-			this->pin = AccountDetails[account_sn][1];
-			this->balance = AccountDetails[account_sn][2];
+			account_num = accounts[account_sn][0];
+			pin = accounts[account_sn][1];
+			balance = accounts[account_sn][2];
 		}
 		
-		void eject_card_state();
 		void withdraw_state();
-		int allow_withdraw_state();
+		void allow_withdraw_state();
 		void confirm_state();
 		void print();
-		void deposite_state();
+		void deposit_state();
 		void Transfer_state();
 		void Confirm_account_state();
 		void allow_transfer_state();
 		void balance_state();
 		void change_pin();
+		void another_transaction();
+
+		void another_transaction(){
+			cout<<"Do you want to make another transaction?"<<endl;
+			bool cont;
+			cin >> cont;
+			if(cont) home();
+			else idle();
+		}
 
 		void change_pin(int newPin){
-			this->pin = newPin;
+			*pin = newPin;
 		}
 		
-		void eject_card_state() {
-			cout << "Thank you for being our client\nSee you soon\nCard Ejected\n\n";
-		}
 		
 		void withdraw_state(){
-			int allowwithdraw;
-			cout <<"if you want to allow withdraw enter 1 else enter 0";
-			cin >> allowwithdraw;
-			if (allowwithdraw == 1)
-				allow_withdraw_state();
-			else if (allowwithdraw == 0)
-				home();
-			else {
-				cout<<"ERROR allowed values are 1 and 0 only";
-				withdraw_state();
-			}
+			int withdraw_amount;
+			cout << "Please enter amount to withdrawn:\n" << endl;
+			cin >> withdraw_amount;
+			allow_withdraw_state(withdraw_amount);
+			
 		}
 
-		int allow_withdraw_state() {
-			int withdraw_amount;
-			cout << "Please enter amount to withdrawn:\n " << endl;
-			cin >> withdraw_amount;
-
-			// get account type
+		void allow_withdraw_state(int withdraw_amount) {
 			if(withdraw_amount <= this->balance){
-				int AccountBalance = this->balance -= withdraw_amount;
+				this->balance -= withdraw_amount;
 				cout << "Dispensing... ";
 				cout << "$"<< withdraw_amount << endl;
-				
-				// update the account balance
-			//	AccountDetails[this->type] = AccountBalance;
-				//getBalance();
 				confirm_state();
-
 			} else {
-				cout << "Insufficent funds" << endl;
-				//getBalance();
-				withdraw_state();
+				cout << "Insufficent funds..ejecting card" << endl;
+				eject_card_state();
 			}
-
-			return 0;
 		}
 
 		void confirm_state(){
-			cout<<"if you want to take a receipt enter 0 else enter 1";
-			int take_receipt;
-			cin >>take_receipt;
-			if (take_receipt ==0)
-			home();
-			else if (take_receipt==1 )
-			print ();
-			else 
-			{
-				cout <<"WRONG OUTPUT\nthe allowed values of take_receipt are 1 and 0 ";
-				confirm_state();
-			} 
+			cout<<"Do you want to print a receipt?"<<endl;
+			char take_receipt;
+			cin >> take_receipt;
+			bool resp = proceed(take_receipt);
+			if (resp)
+				print();
+			else
+				another_transaction();
 		}
 		
 		void print() {
-			cout<<"your account balance is:	 "<<balance;
-			cout<<"your account type is   :	 "<<type;
-			home();
+			cout<<"your account balance is:	 "<<balance<<endl;
+			cout<<"your account type is   :	 "<<type<<endl;
+			another_transaction();
 		}
 
-		void deposite_state() {
-			int depositAmount;
-			cout << "Please enter an amount to deposit:\n";
-			cin >> depositAmount;
+		void deposit_state() {
+			int deposit_amount;
+			cout << "Please enter an amount to deposit: ";
+			cin >> deposit_amount;
 			
-			this->balance += depositAmount;
-			cout << "$" << depositAmount << " was deposit successfully\n";
+			balance += deposit_amount;
+			cout << "$" << deposit_amount << " was deposit successfully\n";
 			
 			char next;
 			cout << "Back to menue (y\n)? ";
@@ -199,16 +178,16 @@ class AccountSettings {
 		
 	/*
 		int getDeposit() {
-			int depositAmount;
+			int deposit_amount;
 			cout << "Please enter an amount to deposit:\n" << endl;
-			cin >> depositAmount;
+			cin >> deposit_amount;
 
-			int AccountBalance = this->balance += depositAmount;
+			int AccountBalance = this->balance += deposit_amount;
 
 			// update the account balance
-			AccountDetails[this->type] = AccountBalance;
+			accounts[this->type] = AccountBalance;
 
-			cout << "\t$" << depositAmount << " was deposited into your account";
+			cout << "\t$" << deposit_amount << " was deposited into your account";
 			getBalance();
 			 
 			return 0;
@@ -246,8 +225,8 @@ class AccountSettings {
 			int AmountTransfer;
 			cout << "Enter amount to transfer "<< endl;
 			cin >>  AmountTransfer;
-			if(AmountTransfer <= AccountDetails[2]){
-				AccountDetails[2] = this->balance -= AmountTransfer;
+			if(AmountTransfer <= accounts[account_sn][2]){
+				accounts[account_sn][2] = this->balance -= AmountTransfer;
 				cout << "$" << AmountTransfer << " has been transfered and deducted from your account" << endl;
 				confirm_state();
 			} else {
@@ -298,19 +277,18 @@ class AccountSettings {
 void account(int option) {
     if(option >= 1 && option <= 5){
 		// Pass in account type
-		AccountSettings Account; 
 		switch(option){
 			case 1:
-				cout << Account.getBalance();
+				Account.getBalance();
 				break;
 			case 2: 
-				cout << Account.allow_withdraw_state();
+				Account.allow_withdraw_state();
 				break;
 			case 3: 
-				cout << Account.getDeposit();
+				Account.getDeposit();
 				break;
 			case 4:
-				cout << Account.getTransfer();
+				Account.getTransfer();
 				break;
 			case 5:
 				int newPin;
@@ -350,17 +328,17 @@ void home() {
 	
 }
 
-
-// Begin MAIN
-int main() {
+void idle(){  // NO TIMER!
 	cout << "\nWelcome to the Bank.\n\tPlease enter your pin number to access your account:" << endl;
-	int pin, chances = 0;
-
+	int pin, account_num, chances = 0;
+	
 	while(chances < 3){
 		cin >> pin;
 
 		if(validatePin(pin)) {
 			cout << endl;
+
+			AccountSettings Account; 
 			home(); // continue to main menu
 			break;
 		} else {
@@ -368,6 +346,32 @@ int main() {
 			chances++;
 		}
 	}
+}
+
+void eject_card_state() {
+	cout << "Thank you for being our client\nSee you soon\n";
+	delete Account;
+	cout<<"Card Ejected\n\n";
+	idle();
+}
+
+// Begin MAIN
+int main() {
+	int accounts[numberOfAccounts][3] = {
+		{50602, 8030, 5000},
+		{28764, 1215, 8000},
+		{12825, 1234, 7500},
+		{34345, 3333, 3000},
+	};
+
+	idle();
 
 	return 0;
 }
+
+//--Malak
+////////validate ACCOUNT....
+/////// all functions in class, and obj in main -----maybe not?
+///// make idle func.
+
+

@@ -74,7 +74,7 @@ parameter[3:0]  idle_state              = 5'b00000;
                     if(){
                         next_state 
                     }
-    insert_card_state :
+    insert_card_state : //insert account number
     language_state : begin
                         next_state = pin_state;		  
                     end
@@ -89,7 +89,7 @@ parameter[3:0]  idle_state              = 5'b00000;
 				        else 
 					        next_state = home_state;	  
 			        end
-    
+                    
     home_state      : begin
                         if(opcode == 3'b000)
                             next_state = eject_card_state;
