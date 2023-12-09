@@ -23,6 +23,7 @@ INSTRUCTIONS:
 #include <string>
 #include <chrono>
 #include <thread>
+#include <future>
 using namespace std;
 
 //global variable
@@ -40,6 +41,7 @@ int accounts[numberOfAccounts][3] = {
 // FUNCTIONS
 void home();
 void account(int option);
+void eject_card_state();
 
 //string AccountType[] = {"", "CHECKINGS", "SAVINGS"};
 //char response;
@@ -86,16 +88,14 @@ bool proceed(char response) {
 	while(true){
 		if(response =='y' || response == 'Y'){
 			return true;
-		} else if(response == 'n' || response == 'N'){
+		} else  //
 			return false;
-		}
-		else{
-			cout << "\nYou must type either Y or N"<<endl;
-		}
+
 	}
 }
 
 //useless?
+/*
 bool waitForUserInput(int maxSeconds) {
 	auto startTime = chrono::system_clock::now();
 	this_thread::sleep_for(chrono::seconds(maxSeconds));
@@ -103,7 +103,91 @@ bool waitForUserInput(int maxSeconds) {
 	auto elapsedSeconds = chrono::duration_cast<chrono::seconds>(endTime - startTime).count();
 	return elapsedSeconds < maxSeconds;
 }
+*/
 
+/*
+bool waitForUserInput(int maxSeconds) {
+    cout << "Enter an option within " << maxSeconds << " seconds:" << endl;
+
+    auto start_time = chrono::steady_clock::now();
+    future<int> user_input = async(launch::async, []() {
+        int option;
+        cin >> option;
+        return option;
+    });
+
+    auto elapsed_time = chrono::steady_clock::now() - start_time;
+    auto timeout = chrono::seconds(maxSeconds);
+
+    if (elapsed_time < timeout) {
+        return user_input.wait_for(timeout - elapsed_time) == future_status::ready;
+    } else {
+        cout << "Error: Timed out waiting for user input." << endl;
+        return false;
+	}
+}
+*/
+
+/*
+bool waitForUserInput(int maxSeconds) {
+    cout << "Enter an option within " << maxSeconds << " seconds:" << endl;
+
+    auto start_time = chrono::steady_clock::now();
+    future<int> user_input = async(launch::async, []() {
+        int option;
+        cin >> option;
+        return option;
+    });
+
+    auto elapsed_time = chrono::steady_clock::now() - start_time;
+    auto timeout = chrono::seconds(maxSeconds);
+
+    if (elapsed_time < timeout) {
+        auto result = user_input.wait_for(timeout - elapsed_time);
+        if (result == future_status::ready) {
+            return true;  // User input received within the time limit
+        } else {
+            cout << "Timed out waiting for user input." << endl;
+            return false;  // Timeout occurred
+        }
+    } else {
+        cout << "Timed out waiting for user input." << endl;
+        return false;  // Timeout occurred
+	}
+}
+*/
+
+/*
+bool waitForUserInput(int maxSeconds) {
+    cout << "Enter an option within " << maxSeconds << " seconds:" << endl;
+
+    auto start_time = chrono::steady_clock::now();
+    future<int> user_input = async(launch::async, []() {
+        int option;
+        cin >> option;
+        return option;
+    });
+
+    auto elapsed_time = chrono::steady_clock::now() - start_time;
+    auto timeout = chrono::seconds(maxSeconds);
+
+    if (elapsed_time < timeout) {
+        auto result = user_input.wait_for(timeout - elapsed_time);
+        if (result == future_status::ready) {
+            return true;  // User input received within the time limit
+        } else {
+            cout << "Timed out waiting for user input. Ejecting card." << endl;
+            eject_card_state();  // Eject the card immediately
+            return false;        // This line is technically unreachable
+        }
+    } else {
+        cout << "Timed out waiting for user input. Ejecting card." << endl;
+        eject_card_state();  // Eject the card immediately
+        return false;        // This line is technically unreachable
+	}
+}
+
+*/
 /////////////////////////////////
 		
 		void withdraw_state();
@@ -117,7 +201,6 @@ bool waitForUserInput(int maxSeconds) {
 		void balance_state();
 		void change_pin();
 		void another_transaction();
-		void eject_card_state();
 
 		void another_transaction(){
 			cout<<"Do you want to make another transaction? Y or N"<<endl;
@@ -129,9 +212,10 @@ bool waitForUserInput(int maxSeconds) {
 
 		void change_pin(){
 			int newPin;
-			cout << "Enter the new pin";
+			cout << "Enter the new pin ";
 			cin >> newPin;
 			*pin = newPin;
+			another_transaction();
 		}
 		
 		
@@ -178,7 +262,7 @@ bool waitForUserInput(int maxSeconds) {
 			*balance += deposit_amount;
 			cout << "$" << deposit_amount << " was deposit successfully\n";
 			
-			another_transaction();
+			confirm_state();
 		}
 		
 	
@@ -192,7 +276,7 @@ bool waitForUserInput(int maxSeconds) {
 					count--;
 					cout << "Incorrect account ID\n" << count << " tries left\n";
 				} else{
-					cout << "Verifired\n";
+					cout << "Verified\n";
 					break;
 				}
 			}
@@ -222,7 +306,7 @@ bool waitForUserInput(int maxSeconds) {
 		
 	
 
-
+/*
 void account(int option) {
 
     if(option >= 1 && option <= 5){
@@ -249,7 +333,7 @@ void account(int option) {
 		cout << "Invalid input.. goint back to ";
 	}
 }
-
+*/
 
 void home() {
 	int option;
@@ -262,16 +346,20 @@ void home() {
 				<<"\n\t5. Change Pin" << endl;
 
 	int maxSeconds = 10;
-    cout << "Enter an option within " << maxSeconds << " seconds:" << endl;
+    //cout << "Enter an option within " << maxSeconds << " seconds:" << endl;
 
-    if (waitForUserInput(maxSeconds)) {  
-        cin >> option;
+/*
+	int option;
+    if (waitForUserInput(maxSeconds, option)) {  
+        //cin >> option;
     } else {
         cout << "Error: Timed out waiting for user input." << endl;
 		eject_card_state();
 		//call exit function here
     }
-	
+*/
+
+cin >> option;
     if(option >= 1 && option <= 5){
 		// Pass in account type
 		switch(option){
@@ -294,6 +382,7 @@ void home() {
 	}
 	else{
 		cout << "Invalid input.. goint back to ";
+		home();
 	}
 	
 }
@@ -339,7 +428,5 @@ int main() {
 
 	return 0;
 }
-
-//--Malak
 
 
