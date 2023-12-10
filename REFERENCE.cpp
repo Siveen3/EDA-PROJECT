@@ -108,8 +108,11 @@ void eject_card();
 		cout << "\t1. Check balance" << "\n\t2. Withdraw" << "\n\t3. Deposit"
 			 << "\n\t4. Transfer"    << "\n\t5. Change Pin" << endl;
 		cin >> option;
-		
+	
 		switch(option) {
+			case 0:
+				eject_card();
+				break;
 			case 1:
 				show_balance();
 				break;
@@ -126,7 +129,7 @@ void eject_card();
 				change_pin();
 				break;
 			default:
-				cout << "Invalid input.\nPlease choose from 1 to 5: ";
+				cout << "Invalid input.\nPlease choose from 0 to 5: ";
 				home();						////////////
 		}
 	}
