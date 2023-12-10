@@ -1,436 +1,244 @@
-/*
-TITLE:		SIMPLE ATM MACHINE
-
-PURPOSE:	Write a program that simulates as an atm machine
-
-TASKS:		Create an account that has the ability to 
-				1) Check checking account balance
-				2) Check savings account balance
-				3) Make transfers between each account
-				4) Make deposits into accounts
-				5) Make withdrawals from accounts
-
-AUTHOR:		Nadine E. Jerome
-
-INSTRUCTIONS:	
-			Enter pin number '1234'
-			Checkings Account Balance = 100
-			Savings Account Balance = 600
-*/
-
-
 #include <iostream>
 #include <string>
-#include <chrono>
-#include <thread>
-#include <future>
 using namespace std;
 
-//global variable
-int account_sn;
+int account_sn;		//current account serial number
+
 const int numberOfAccounts = 4;
-int *account_num, *pin, *balance;
-int accounts[numberOfAccounts][3] = {
-		{50602, 8030, 5000},
+int accounts[numberOfAccounts][3] =
+{		{50602, 8030, 5000},
 		{28764, 1215, 8000},
 		{12825, 1234, 7500},
 		{34345, 3333, 3000},
-	};
-
-
-// FUNCTIONS
-void home();
-void account(int option);
-void eject_card_state();
-
-//string AccountType[] = {"", "CHECKINGS", "SAVINGS"};
-//char response;
-/*
-int AccountDetails[] = {
-	50602,      // accout number
-	8030,		// pin number
-	5000,	    // Balance
-
 };
-*/
+
+int *account_num, *pin, *balance;
+
+//functions
+
+void idle();
+void home();
+bool validate_acc(int acc);
+bool validate_pin(int pin);
+int  find_account(int acc);
+bool proceed(char response);
+void withdraw();
+void allow_withdraw(int n);
+void confirm();
+void print();
+void deposit();
+void transfer();
+void allow_transfer(int n);
+void show_balance();
+void change_pin();
+void another_transaction();
+void eject_card();
 
 
-
-bool validateAcc(int acc) {
-	for(int i = 0; i < numberOfAccounts; i++){
-		if (acc == accounts[i][0]) {
-			account_sn = i;
-			return true;
-		} 
+	int main() {
+		idle();
+		return 0;
 	}
-	return false;
-}
 
-bool validatePin(int pin){
-	if(pin == accounts[account_sn][1])
-		return true;
-	else 
-		return false;
-}
-
-int findAccount(int acc){ 							// returns account index if found, else returns -1
-	for(int i = 0; i < numberOfAccounts; i++){
-		if (acc == accounts[i][0]){
-			return i;
-		}
-	}
-	return -1;
-}
-
-
-// useless..?
-bool proceed(char response) {
-	while(true){
-		if(response =='y' || response == 'Y'){
-			return true;
-		} else  //
-			return false;
-
-	}
-}
-
-//useless?
-/*
-bool waitForUserInput(int maxSeconds) {
-	auto startTime = chrono::system_clock::now();
-	this_thread::sleep_for(chrono::seconds(maxSeconds));
-	auto endTime = chrono::system_clock::now();
-	auto elapsedSeconds = chrono::duration_cast<chrono::seconds>(endTime - startTime).count();
-	return elapsedSeconds < maxSeconds;
-}
-*/
-
-/*
-bool waitForUserInput(int maxSeconds) {
-    cout << "Enter an option within " << maxSeconds << " seconds:" << endl;
-
-    auto start_time = chrono::steady_clock::now();
-    future<int> user_input = async(launch::async, []() {
-        int option;
-        cin >> option;
-        return option;
-    });
-
-    auto elapsed_time = chrono::steady_clock::now() - start_time;
-    auto timeout = chrono::seconds(maxSeconds);
-
-    if (elapsed_time < timeout) {
-        return user_input.wait_for(timeout - elapsed_time) == future_status::ready;
-    } else {
-        cout << "Error: Timed out waiting for user input." << endl;
-        return false;
-	}
-}
-*/
-
-/*
-bool waitForUserInput(int maxSeconds) {
-    cout << "Enter an option within " << maxSeconds << " seconds:" << endl;
-
-    auto start_time = chrono::steady_clock::now();
-    future<int> user_input = async(launch::async, []() {
-        int option;
-        cin >> option;
-        return option;
-    });
-
-    auto elapsed_time = chrono::steady_clock::now() - start_time;
-    auto timeout = chrono::seconds(maxSeconds);
-
-    if (elapsed_time < timeout) {
-        auto result = user_input.wait_for(timeout - elapsed_time);
-        if (result == future_status::ready) {
-            return true;  // User input received within the time limit
-        } else {
-            cout << "Timed out waiting for user input." << endl;
-            return false;  // Timeout occurred
-        }
-    } else {
-        cout << "Timed out waiting for user input." << endl;
-        return false;  // Timeout occurred
-	}
-}
-*/
-
-/*
-bool waitForUserInput(int maxSeconds) {
-    cout << "Enter an option within " << maxSeconds << " seconds:" << endl;
-
-    auto start_time = chrono::steady_clock::now();
-    future<int> user_input = async(launch::async, []() {
-        int option;
-        cin >> option;
-        return option;
-    });
-
-    auto elapsed_time = chrono::steady_clock::now() - start_time;
-    auto timeout = chrono::seconds(maxSeconds);
-
-    if (elapsed_time < timeout) {
-        auto result = user_input.wait_for(timeout - elapsed_time);
-        if (result == future_status::ready) {
-            return true;  // User input received within the time limit
-        } else {
-            cout << "Timed out waiting for user input. Ejecting card." << endl;
-            eject_card_state();  // Eject the card immediately
-            return false;        // This line is technically unreachable
-        }
-    } else {
-        cout << "Timed out waiting for user input. Ejecting card." << endl;
-        eject_card_state();  // Eject the card immediately
-        return false;        // This line is technically unreachable
-	}
-}
-
-*/
-/////////////////////////////////
-		
-		void withdraw_state();
-		void allow_withdraw_state(int n);
-		void confirm_state();
-		void print();
-		void deposit_state();
-		void Transfer_state();
-		void Confirm_account_state();
-		void allow_transfer_state(int n);
-		void balance_state();
-		void change_pin();
-		void another_transaction();
-
-		void another_transaction(){
-			cout<<"Do you want to make another transaction? Y or N"<<endl;
-			char cont;
-			cin >> cont;
-			if(proceed(cont)) home();
-			else eject_card_state();
-		}
-
-		void change_pin(){
-			int newPin;
-			cout << "Enter the new pin ";
-			cin >> newPin;
-			*pin = newPin;
-			another_transaction();
-		}
-		
-		
-		void withdraw_state(){
-			int withdraw_amount;
-			cout << "Please enter amount to withdrawn:\n" << endl;
-			cin >> withdraw_amount;
-			allow_withdraw_state(withdraw_amount);
+	void idle(){
+		int account_num_input, pin_input, chances = 3;
+		cout<<"---------------------------------------------\n";
+		cout<<"\nWelcome to the ATM.\nPlease insert your card." << endl;
+		cin >> account_num_input;
+		if(validate_acc(account_num_input)) {
+			cout << "Enter the pin number: ";
 			
-		}
-
-		void allow_withdraw_state(int withdraw_amount) {
-			if(withdraw_amount <= *balance){
-				*balance -= withdraw_amount;
-				cout << "Dispensing... ";
-				cout << "$"<< withdraw_amount << endl;
-				confirm_state();
-			} else {
-				cout << "Insufficent funds..ejecting card" << endl;
-				eject_card_state();
-			}
-		}
-
-		void confirm_state(){
-			cout<<"Do you want to print a receipt? Y or N"<<endl;
-			char take_receipt;
-			cin >> take_receipt;
-			if (proceed(take_receipt))
-				print();
-			else
-				another_transaction();
-		}
-		
-		void print() {
-			cout<<"your account balance is:	 " << *balance << endl;
-			another_transaction();
-		}
-
-		void deposit_state() {
-			int deposit_amount;
-			cout << "Please enter an amount to deposit: ";
-			cin >> deposit_amount;
-			
-			*balance += deposit_amount;
-			cout << "$" << deposit_amount << " was deposit successfully\n";
-			
-			confirm_state();
-		}
-		
-	
-		void Transfer_state() {
-			int count = 3, loc, account_num_input;
-			cout << "Enter the account you want to transfer to: ";
-			while(count != 0){
-				cin >> account_num_input;
-				if(account_num_input == *account_num){
-					cout << "Invalid transaction, you can't transfer for yourself\n";
-					eject_card_state();
-				}
-				loc = findAccount(account_num_input);
-				if(loc==-1){
-					count--;
-					cout << "Incorrect account ID\n" << count << " tries left\n";
-				} else{
-					cout << "Verified\n";
+			while(chances != 0) {
+				cin >> pin_input;
+				if(validate_pin(pin_input)) {
+					account_num = &accounts[account_sn][0];
+					pin = &accounts[account_sn][1];
+					balance = &accounts[account_sn][2];
+					home();
 					break;
+				} else {
+					chances--;
+					cout << "Invalid pin. " << chances << " tries left\n"; 
 				}
 			}
-			if(count == 0) eject_card_state();
-			else allow_transfer_state(loc);
-		}
-		
-		void allow_transfer_state(int acc){
-			int AmountTransfer;
-			cout << "Enter amount to transfer: "<< endl;
-			cin >>  AmountTransfer;
-			if(AmountTransfer <= *balance){
-				*balance -= AmountTransfer;
-				accounts[acc][2] += AmountTransfer;
-				cout << "$" << AmountTransfer << " has been transfered and deducted from your account" << endl;
-				confirm_state();
-			} else {
-				cout << "Insuffient funds." << endl;
-				eject_card_state();
-			}
-		}
 			
-		void balance_state() {
-			cout << "Your account balance is $" << *balance << endl;
-			confirm_state();
+			eject_card(); 	//incorrect pin
+		} else {
+			cout << "\nSomething went wrong\n";
+			eject_card(); 	//invalid account
 		}
+	}
+
+	bool validate_acc(int acc) {
+		for(int i = 0; i < numberOfAccounts; i++)
+			if (acc == accounts[i][0]) {
+				account_sn = i;
+				return true;
+			}
+		return false;
+	}
+
+	bool validate_pin(int pin) {
+		if(pin == accounts[account_sn][1])
+			return true;
+		else 
+			return false;
+	}
+
+	int find_account(int acc) { 		// returns account index if found, else returns -1
+		for(int i = 0; i < numberOfAccounts; i++)
+			if (acc == accounts[i][0])
+				return i;
+		return -1;
+	}
+
+	bool proceed(char response) {
+		while(true) {
+			if(response == 'y' || response == 'Y')
+				return true;
+			else 
+				return false;
+		}
+	}
+
+	void home() {
+		int option;
+		cout << "\n\t--- Main Menu ---\n" << endl;
+		cout << "Choose a transaction:" << endl;
+		cout << "\t1. Check balance" << "\n\t2. Withdraw" << "\n\t3. Deposit"
+			 << "\n\t4. Transfer"    << "\n\t5. Change Pin" << endl;
+		cin >> option;
 		
-	
-
-/*
-void account(int option) {
-
-    if(option >= 1 && option <= 5){
-		// Pass in account type
-		switch(option){
+		switch(option) {
 			case 1:
-				balance_state();
+				show_balance();
 				break;
 			case 2: 
-				withdraw_state();
+				withdraw();
 				break;
 			case 3: 
-				deposit_state();
+				deposit();
 				break;
 			case 4:
-				Transfer_state();
+				transfer();
 				break;
 			case 5:
 				change_pin();
 				break;
+			default:
+				cout << "Invalid input.\nPlease choose from 1 to 5: ";
+				home();						////////////
 		}
 	}
-	else{
-		cout << "Invalid input.. goint back to ";
+
+	void another_transaction(){
+		cout<<"Do you want to make another transaction? (y/n)"<<endl;
+		char cont;
+		cin >> cont;
+		if(proceed(cont))
+			home();
+		else
+			eject_card();
 	}
-}
-*/
 
-void home() {
-	int option;
-	cout << "Main Menu--" <<endl;
-	cout << "\tPlease make a selection. " << endl;
-	cout << "\n\t1. Check balance"
-				<<"\n\t2. Withdraw"
-				<<"\n\t3. Deposit"
-				<<"\n\t4. Transfer"
-				<<"\n\t5. Change Pin" << endl;
+	void change_pin() {
+		int new_pin;
+		cout << "Enter the new pin: ";
+		cin >> new_pin;
+		*pin = new_pin;
+		another_transaction();
+	}
 
-	int maxSeconds = 10;
-    //cout << "Enter an option within " << maxSeconds << " seconds:" << endl;
+	void withdraw(){
+		int withdraw_amount;
+		cout << "Enter amount to withdrawn: " << endl;
+		cin >> withdraw_amount;
+		allow_withdraw(withdraw_amount);
+	}
 
-/*
-	int option;
-    if (waitForUserInput(maxSeconds, option)) {  
-        //cin >> option;
-    } else {
-        cout << "Error: Timed out waiting for user input." << endl;
-		eject_card_state();
-		//call exit function here
-    }
-*/
-
-cin >> option;
-    if(option >= 1 && option <= 5){
-		// Pass in account type
-		switch(option){
-			case 1:
-				balance_state();
-				break;
-			case 2: 
-				withdraw_state();
-				break;
-			case 3: 
-				deposit_state();
-				break;
-			case 4:
-				Transfer_state();
-				break;
-			case 5:
-				change_pin();
-				break;
+	void allow_withdraw(int withdraw_amount) {
+		if(withdraw_amount <= *balance) {
+			*balance -= withdraw_amount;
+			cout << "Dispensing " << "$"<< withdraw_amount << endl;
+			confirm();
+		} else {
+			cout << "Insufficent funds.. Ejecting card" << endl;
+			eject_card();
 		}
 	}
-	else{
-		cout << "Invalid input.. goint back to ";
-		home();
+
+	void confirm() {
+		cout << "Do you want to print a receipt? (y/n)" << endl;
+		char take_receipt;
+		cin >> take_receipt;
+		if (proceed(take_receipt))
+			print();
+		else
+			another_transaction();
 	}
-	
-}
 
-void idle(){  // NO TIMER!
-	int pin_input, account_num_input, chances = 3;
-	cout<<"\nWelcome to the Bank.\n\tPlease insert your card" << endl;
-	cin >> account_num_input;
-	if(validateAcc(account_num_input)){
-		cout << "Enter your pin number to access your account:" << endl;
+	void print() {
+		cout << "Your account balance is:	 $" << *balance << endl;
+		another_transaction();
+	}
 
-		while(chances != 0){
-			cin >> pin_input;
+	void deposit() {
+		int deposit_amount;
+		cout << "Enter an amount to deposit: ";
+		cin >> deposit_amount;
+		
+		*balance += deposit_amount;
+		cout << "$" << deposit_amount << " was deposited successfully.\n";
+		confirm();
+	}
 
-			if(validatePin(pin_input)) {
-				account_num = &accounts[account_sn][0];
-				pin = &accounts[account_sn][1];
-				balance = &accounts[account_sn][2];
-				home(); // continue to main menu
-				break;
+	void transfer() {
+		int count = 3, acc, account_num_input;
+		cout << "Enter the account you want to transfer to: ";
+		while(count != 0) {
+			cin >> account_num_input;
+			if(account_num_input == *account_num){
+			cout << "\nInvalid input. you can't transfer for your account\n";
+			eject_card();
+			}
+			acc = find_account(account_num_input);
+			if(acc == -1) {
+				count--;
+				cout << "Incorrect account. " << count << " tries left\t";
 			} else {
-				chances--;
-				cout << "Invalid pin. "<<chances<<" tries left" << endl; 
+				cout << "Account Verified\n";
+				break;
 			}
 		}
-		eject_card_state(); //incorrect pin
-	} else{
-		cout << "\nSomething went wrong\n";
-		eject_card_state(); //invalid account
+		if(count == 0)
+			eject_card();
+		else
+			allow_transfer(acc);
 	}
-}
 
-void eject_card_state() {
-	cout << "Thank you for being our client\nSee you soon\n";
-	account_num = pin = balance = NULL; 
-	cout<<"Card Ejected\n\n";
-	idle();
-}
+	void allow_transfer(int loc) {
+		int amount_transfer;
+		cout << "Enter amount to transfer: ";
+		cin >> amount_transfer;
+		if(amount_transfer <= *balance) {
+			*balance -= amount_transfer;
+			accounts[loc][2] += amount_transfer;
+			cout << "$" << amount_transfer << " has been transfered and deducted from your account" << endl;
+			confirm();
+		} else {
+			cout << "Insuffient funds." << endl;
+			eject_card();
+		}
+	}
+		
+	void show_balance() {
+		cout << "Your account balance is $" << *balance << endl;
+		confirm();
+	}
 
-// Begin MAIN
-int main() {
-	idle();
-
-	return 0;
-}
-
-
+	void eject_card() {
+		cout << "\nThank you for being our client\n\tSee you soon\n";
+		account_num = pin = balance = NULL; 
+		cout<<"\nCard Ejected\n\n";
+		idle();
+	}
