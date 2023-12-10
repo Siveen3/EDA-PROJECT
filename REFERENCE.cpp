@@ -271,6 +271,10 @@ bool waitForUserInput(int maxSeconds) {
 			cout << "Enter the account you want to transfer to: ";
 			while(count != 0){
 				cin >> account_num_input;
+				if(account_num_input == *account_num){
+					cout << "Invalid transaction, you can't transfer for yourself\n";
+					eject_card_state();
+				}
 				loc = findAccount(account_num_input);
 				if(loc==-1){
 					count--;
