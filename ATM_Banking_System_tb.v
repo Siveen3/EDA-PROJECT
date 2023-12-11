@@ -39,6 +39,8 @@ module ATM_TB;
     .Receipt_Printed(Receipt_Printed)
   );
 
+    integer i;
+
     // Clock generation
   initial begin
     clk = 0;
@@ -72,6 +74,34 @@ module ATM_TB;
 
     $display("Error! Reset Issue");
 
+    reset= 1'b1;
+    for(int i=0; i<=1000; i=i+1) begin
+    @(negedge clk)
+     Card_in = $random();
+     Language = $random();
+     Timer = $random();
+     money_counting = $random();
+     another_transaction_bit = $random();
+     opcode = $random();
+     password = $random();
+     new_pin = $random();
+     allowwithdraw = $random();
+     take_receipt = $random();
+     allow_transfer = $random();
+     Pers_Account_No = $random();
+     ur_account = $random();
+     withdraw_amount = $random();
+     Transfer_Amount = $random();
+     deposit_amount = $random();
 
+    // Check Balance
+        if(Card_in = 1'b0 && opcode = 3'b001 && take_receipt = 1'b1 && allowwithdraw = 1'b0 && another_transaction_bit = 1'b0 && Balance_Shown !=1'b0)
+            $display("Error! Check Balance Issue while not inserting a card");
+        
+        if(Card_in = 1'b1 && opcode = 3'b001 && take_receipt = 1'b1 && allowwithdraw = 1'b0 && another_transaction_bit = 1'b0 && Balance_Shown !=1'b1)
+            $display("Error! Check Balance Issue while a card is inserted");
+
+
+    end
   end
   endmodule
