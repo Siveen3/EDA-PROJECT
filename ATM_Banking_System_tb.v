@@ -76,7 +76,7 @@ module ATM_TB;
 
     reset= 1'b1;
     for(int i=0; i<=1000; i=i+1) begin
-    @(negedge clk)
+    
      Card_in = $random();
      Language = $random();
      Timer = $random();
@@ -94,6 +94,7 @@ module ATM_TB;
      Transfer_Amount = $random();
      deposit_amount = $random();
 
+    @(negedge clk)
     // Check Balance
         if(Card_in = 1'b0 && opcode = 3'b001 && take_receipt = 1'b1 && allowwithdraw = 1'b0 && another_transaction_bit = 1'b0 && Balance_Shown !=1'b0)
             $display("Error! Check Balance Issue while not inserting a card");
@@ -103,5 +104,6 @@ module ATM_TB;
 
 
     end
+    $stop();
   end
   endmodule
