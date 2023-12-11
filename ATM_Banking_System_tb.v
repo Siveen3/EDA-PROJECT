@@ -44,6 +44,35 @@ module ATM_TB;
     clk = 0;
     forever #5 clk = ~clk;
   end
-  
 
+  // Initialize inputs
+  initial begin
+    reset = 0;
+    Card_in = 0;
+    Language = 0;
+    Timer = 0;
+    money_counting = 0;
+    another_transaction_bit = 0;
+    opcode = 3'b000;
+    password = 16'h0000;
+    new_pin = 16'h0000;
+    allowwithdraw = 0;
+    take_receipt = 0;
+    allow_transfer = 0;
+    Pers_Account_No = 16'h0000;
+    ur_account = 16'h0000;
+    withdraw_amount = 18'h00000;
+    Transfer_Amount = 18'h00000;
+    deposit_amount = 18'h00000;
+
+  end
+
+    // Check reset 
+  @(negedge clk)
+    if(Transfer_Successfully !=0 || ATM_Usage_Finished !=0 || Balance_Shown !=0 || Deposited_Successfully !=0 || 
+    Withdrew_Successfully !=0 || Pin_Changed_Successfully !=0 || Receipt_Printed !=0)
+
+    $display("Error! Reset Issue");
+
+    
   endmodule
