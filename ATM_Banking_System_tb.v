@@ -65,8 +65,6 @@ module ATM_TB;
     Transfer_Amount = 18'h00000;
     deposit_amount = 18'h00000;
 
-  end
-
     // Check reset 
   @(negedge clk)
     if(Transfer_Successfully !=0 || ATM_Usage_Finished !=0 || Balance_Shown !=0 || Deposited_Successfully !=0 || 
@@ -74,5 +72,6 @@ module ATM_TB;
 
     $display("Error! Reset Issue");
 
-    
+
+  end
   endmodule
