@@ -8,7 +8,7 @@ module ATM_TB;
   reg [16:0] Pers_Account_No, ur_account;
   reg [18:0] withdraw_amount, Transfer_Amount, deposit_amount;
   wire Transfer_Successfully, ATM_Usage_Finished, Balance_Shown, Deposited_Successfully, Withdrew_Successfully,
-  Pin_Changed_Successfully, Receipt_Printed;
+    Pin_Changed_Successfully, Receipt_Printed;
 
   // Instantiate the ATM module
   ATM uut (
@@ -59,7 +59,6 @@ module ATM_TB;
     password = 16'h0000;
     new_pin = 16'h0000;
     allowwithdraw = 0;
-    
     take_receipt = 0;
     allow_transfer = 0;
     Pers_Account_No = 16'h0000;
@@ -70,8 +69,8 @@ module ATM_TB;
 
     // Check reset 
     @(negedge clk)
-    if (Transfer_Successfully != 0 || ATM_Usage_Finished != 0 || Balance_Shown != 0 || Deposited_Successfully != 0 || 
-        Withdrew_Successfully != 0 || Pin_Changed_Successfully != 0 || Receipt_Printed != 0) begin
+    if (Transfer_Successfully || ATM_Usage_Finished || Balance_Shown || Deposited_Successfully || 
+        Withdrew_Successfully || Pin_Changed_Successfully || Receipt_Printed) begin
       $display("Error! Reset Issue");
       $stop;    
     end
@@ -79,12 +78,13 @@ module ATM_TB;
     reset = 1'b1;
 
     for (i = 0; i <= 1000; i = i + 1) begin
+      @(negedge clk) 
       Card_in = $random();
       Language = $random();
       Timer = $random();
       money_counting = $random();
       another_transaction_bit = $random();
-      opcode = $random();
+      opcode = $urandom % 8;  // Randomize opcode in the range [0, 7]
       password = $random();
       new_pin = $random();
       allowwithdraw = $random();
@@ -96,9 +96,30 @@ module ATM_TB;
       Transfer_Amount = $random();
       deposit_amount = $random();
 
-     
-    end   
-    $stop();
-     end
-    
+/*      @(negedge clk)
+      // Check Idle 
+      if (Card_in == 1'b0 && opcode == 3'b001 && take_receipt == 1'b1 && allowwithdraw == 1'b0 && another_transaction_bit == 1'b0 &&
+          ATM_Usage_Finished && Balance_Shown && Deposited_Successfully && Withdrew_Successfully && 
+          Transfer_Successfully && Pin_Changed_Successfully && Receipt_Printed) begin
+        $display("Error! In Idle state");
+        $stop;
+      end
+
+      // Check Balance
+      if (Card_in == 1'b1 && opcode == 3'b001 && take_receipt == 1'b1 && allowwithdraw == 1'b0 && another_transaction_bit == 1'b0 && 
+          ATM_Usage_Finished && Balance_Shown && Deposited_Successfully && Withdrew_Successfully &&
+          Transfer_Successfully && Pin_Changed_Successfully && Receipt_Printed) begin
+        $display("Error! Check Balance Issue while a card is inserted"); 
+        $stop;
+      end
+            
+      // Check language
+      if (Card_in == 1'b1 && Language == 1'b1 && ATM_Usage_Finished && Balance_Shown && Deposited_Successfully 
+          && Withdrew_Successfully && Transfer_Successfully && Pin_Changed_Successfully && Receipt_Printed) begin
+        $display("Error! In selecting a language "); 
+        $stop;
+      end
+      */
+    end
+  end
 endmodule
