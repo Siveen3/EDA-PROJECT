@@ -1,0 +1,56 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+dC:/intelFPGA/18.1
+vATM
+Z0 !s110 1702383114
+!i10b 1
+!s100 `iGC2H2W;[2gXhGCHUHoH0
+Ia3Yg_M15dcnV8el?[z<3^3
+Z1 VDg1SIo80bB@j0V0VzS_@n1
+Z2 dC:/Users/dolab/Documents/GitHub/EDA-PROJECT
+w1702380963
+8ATM_Banking_System.v
+FATM_Banking_System.v
+L0 20
+Z3 OV;L;10.5b;63
+r1
+!s85 0
+31
+Z4 !s108 1702383114.000000
+Z5 !s107 ATM_Banking_System_tb.v|ATM_Banking_System.v|
+Z6 !s90 -reportprogress|300|ATM_Banking_System.v|ATM_Banking_System_tb.v|+cover|
+!i113 1
+Z7 !s102 +cover
+Z8 o+cover
+Z9 tCvgOpt 0
+n@a@t@m
+vATM_TB
+R0
+!i10b 1
+!s100 1RQ@UK4]>`OR;Bl4oblz42
+IU[mocIICKQb2H7RVK:JBE2
+R1
+R2
+w1702380958
+8ATM_Banking_System_tb.v
+FATM_Banking_System_tb.v
+L0 3
+R3
+r1
+!s85 0
+31
+R4
+R5
+R6
+!i113 1
+R7
+R8
+R9
+n@a@t@m_@t@b

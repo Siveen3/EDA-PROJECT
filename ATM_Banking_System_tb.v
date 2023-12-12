@@ -97,32 +97,8 @@ module ATM_TB;
       deposit_amount = $random();
 
      
-/*
-	 @(negedge clk)
-      // Check Idle 
-      if (Card_in == 1'b0 && opcode == 3'b001 && take_receipt == 1'b1 && allowwithdraw == 1'b0 && another_transaction_bit == 1'b0 &&
-          ATM_Usage_Finished != 1'b0 && Balance_Shown != 1'b0 && Deposited_Successfully != 1'b0 && Withdrew_Successfully != 1'b0 && 
-          Transfer_Successfully != 1'b0 && Pin_Changed_Successfully != 1'b0 && Receipt_Printed != 1'b0) begin
-        $display("Error! In Idle state");
-        $stop;
-      end
-
-      // Check Balance
-      if (Card_in == 1'b1 && opcode == 3'b001 && take_receipt == 1'b1 && allowwithdraw == 1'b0 && another_transaction_bit == 1'b0 && 
-          ATM_Usage_Finished != 1'b0 && Balance_Shown != 1'b1 && Deposited_Successfully != 1'b0 && Withdrew_Successfully != 1'b0 &&
-          Transfer_Successfully != 1'b0 && Pin_Changed_Successfully != 1'b0 && Receipt_Printed != 1'b0) begin
-        $display("Error! Check Balance Issue while a card is inserted"); 
-        $stop;
-      end
-            
-      //Check language
-      if (Card_in == 1'b1 && Language == 1'b1 &&  ATM_Usage_Finished != 1'b0 && Balance_Shown != 1'b0 && Deposited_Successfully != 1'b0 
-          && Withdrew_Successfully != 1'b0 && Transfer_Successfully != 1'b0 && Pin_Changed_Successfully != 1'b0 && Receipt_Printed != 1'b0) begin
-        $display("Error! In selecting a language "); 
-        $stop;
-      end
-
-*/
- end   
-  end
+    end   
+    $stop();
+     end
+    
 endmodule
