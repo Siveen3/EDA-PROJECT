@@ -9,46 +9,48 @@ z2
 cModel Technology
 dC:/intelFPGA/18.1
 vATM
-Z0 !s110 1702385525
+Z0 !s110 1702495497
 !i10b 1
 !s100 `iGC2H2W;[2gXhGCHUHoH0
-I<hTYRXb8STii5GCSVSB9=3
+In:3HTaG:MDI8nhnM:RE^C0
 Z1 VDg1SIo80bB@j0V0VzS_@n1
 Z2 dC:/Users/dolab/Documents/GitHub/EDA-PROJECT
-w1702383175
-8C:/Users/dolab/Documents/GitHub/EDA-PROJECT/ATM_Banking_System.v
-FC:/Users/dolab/Documents/GitHub/EDA-PROJECT/ATM_Banking_System.v
+w1702385613
+8ATM_Banking_System.v
+FATM_Banking_System.v
 L0 20
 Z3 OV;L;10.5b;63
 r1
 !s85 0
 31
-Z4 !s108 1702385525.000000
-!s107 C:/Users/dolab/Documents/GitHub/EDA-PROJECT/ATM_Banking_System.v|
-!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/dolab/Documents/GitHub/EDA-PROJECT/ATM_Banking_System.v|
+Z4 !s108 1702495497.000000
+Z5 !s107 ATM_Banking_System_tb.v|ATM_Banking_System.v|
+Z6 !s90 -reportprogress|300|ATM_Banking_System.v|ATM_Banking_System_tb.v|+cover|-covercells|
 !i113 1
-Z5 o-work work
-Z6 tCvgOpt 0
+Z7 !s102 +cover -covercells
+Z8 o+cover -covercells
+Z9 tCvgOpt 0
 n@a@t@m
 vATM_TB
 R0
 !i10b 1
-!s100 1bN4K@RTBnf?`K54]aR111
-IWE<hM25TeV9nH3HfQdigY3
+!s100 ?lf9VhQH:9ZJjE]_85A>K3
+IK:_9EnN`6mQHZS`jog3R?3
 R1
 R2
-w1702385425
-8C:/Users/dolab/Documents/GitHub/EDA-PROJECT/ATM_Banking_System_tb.v
-FC:/Users/dolab/Documents/GitHub/EDA-PROJECT/ATM_Banking_System_tb.v
+w1702493884
+8ATM_Banking_System_tb.v
+FATM_Banking_System_tb.v
 L0 3
 R3
 r1
 !s85 0
 31
 R4
-!s107 C:/Users/dolab/Documents/GitHub/EDA-PROJECT/ATM_Banking_System_tb.v|
-!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/dolab/Documents/GitHub/EDA-PROJECT/ATM_Banking_System_tb.v|
-!i113 1
 R5
 R6
+!i113 1
+R7
+R8
+R9
 n@a@t@m_@t@b
