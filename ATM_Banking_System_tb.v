@@ -62,6 +62,8 @@ module ATM_TB;
     Transfer_Amount = 18'h00000;
     deposit_amount = 18'h00000;
 
+    integer i
+
     @(negedge clk)
     if (
       Transfer_Successfully != 0 || ATM_Usage_Finished != 0 || Balance_Shown != 0 ||
@@ -71,7 +73,7 @@ module ATM_TB;
       $display("Error! Reset Issue");
 
     reset = 1'b1;
-    for (int i = 0; i <= 5000; i = i + 1) begin
+    for ( i = 0; i <= 5000; i = i + 1) begin
       Card_in = $random();
       Language = $random();
       Timer = $random();
