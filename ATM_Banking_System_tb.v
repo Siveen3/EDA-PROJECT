@@ -77,7 +77,490 @@ module ATM_TB;
 
     reset = 1'b1;
 
-    for (i = 0; i <= 1000; i = i + 1) begin
+   
+  // Test Scenario 1: Successful Withdrawal
+
+  // Insert card
+  Card_in = 1;
+  #20;
+
+  // Enter language
+  Language = 1;
+  #20;
+
+  // Enter PIN
+  password = 17'h1F5E; // Use a valid PIN
+  #20;
+
+  // Select withdraw operation
+  opcode = 3'b010; // Withdraw operation
+  withdraw_amount = 500; // Set withdrawal amount
+  #20;
+
+  // Confirm withdrawal
+  take_receipt = 1;
+  #20;
+
+  // Check expected outputs
+  if (Withdrew_Successfully == 1 && ATM_Usage_Finished == 0 && Balance_Shown == 0 && Deposited_Successfully == 0 &&
+      Transfer_Successfully == 0 && Pin_Changed_Successfully == 0 && Receipt_Printed == 1)
+    $display("Test Scenario 1: Successful Withdrawal - Passed");
+  else
+    $display("Test Scenario 1: Successful Withdrawal - Failed");
+
+
+
+
+// Test Scenario 2: Invalid PIN, Eject Card
+
+  // Insert card
+  Card_in = 1;
+  #20;
+
+  // Enter language
+  Language = 1;
+  #20;
+
+  // Enter invalid PIN
+  password = 17'h1234; // Use an invalid PIN
+  #20;
+
+  // Check expected outputs
+  if (Withdrew_Successfully == 0 && ATM_Usage_Finished == 0 && Balance_Shown == 0 && Deposited_Successfully == 0 &&
+      Transfer_Successfully == 0 && Pin_Changed_Successfully == 0 && Receipt_Printed == 0)
+    $display("Test Scenario 2: Invalid PIN, Eject Card - Passed");
+  else
+    $display("Test Scenario 2: Invalid PIN, Eject Card - Failed");
+
+
+
+
+// Test Scenario 3: Check Balance
+
+  // Insert card
+  Card_in = 1;
+  #20;
+
+  // Enter language
+  Language = 1;
+  #20;
+
+  // Enter PIN
+  password = 17'h1F5E; // Use a valid PIN
+  #20;
+
+  // Select balance inquiry operation
+  opcode = 3'b001; // Balance inquiry operation
+  #20;
+
+  // Confirm balance inquiry
+  take_receipt = 1;
+  #20;
+
+  // Check expected outputs
+  if (Withdrew_Successfully == 0 && ATM_Usage_Finished == 0 && Balance_Shown == 1 && Deposited_Successfully == 0 &&
+      Transfer_Successfully == 0 && Pin_Changed_Successfully == 0 && Receipt_Printed == 1)
+    $display("Test Scenario 3: Check Balance - Passed");
+  else
+    $display("Test Scenario 3: Check Balance - Failed");
+
+
+
+
+// Test Scenario 4: Successful Deposit
+
+  // Insert card
+  Card_in = 1;
+  #20;
+
+  // Enter language
+  Language = 1;
+  #20;
+
+  // Enter PIN
+  password = 17'h1F5E; // Use a valid PIN
+  #20;
+
+  // Select deposit operation
+  opcode = 3'b011; // Deposit operation
+  deposit_amount = 1000; // Set deposit amount
+  money_counting = 1; // Signal money counting
+  #20;
+
+  // Confirm deposit
+  take_receipt = 1;
+  #20;
+
+  // Check expected outputs
+  if (Withdrew_Successfully == 0 && ATM_Usage_Finished == 0 && Balance_Shown == 0 && Deposited_Successfully == 1 &&
+      Transfer_Successfully == 0 && Pin_Changed_Successfully == 0 && Receipt_Printed == 1)
+    $display("Test Scenario 4: Successful Deposit - Passed");
+  else
+    $display("Test Scenario 4: Successful Deposit - Failed");
+
+
+
+
+// Test Scenario 5: Successful Transfer
+
+  // Insert card
+  Card_in = 1;
+  #20;
+
+  // Enter language
+  Language = 1;
+  #20;
+
+  // Enter PIN
+  password = 17'h1F5E; // Use a valid PIN
+  #20;
+
+  // Select transfer operation
+  opcode = 3'b100; // Transfer operation
+  Pers_Account_No = 17'h4D2; // Set recipient account
+  Transfer_Amount = 200; // Set transfer amount
+  #20;
+
+  // Confirm transfer
+  take_receipt = 1;
+  #20;
+
+  // Check expected outputs
+  if (Withdrew_Successfully == 0 && ATM_Usage_Finished == 0 && Balance_Shown == 0 && Deposited_Successfully == 0 &&
+      Transfer_Successfully == 1 && Pin_Changed_Successfully == 0 && Receipt_Printed == 1)
+    $display("Test Scenario 5: Successful Transfer - Passed");
+  else
+    $display("Test Scenario 5: Successful Transfer - Failed");
+
+
+
+
+// Test Scenario 6: Change PIN
+
+  // Insert card
+  Card_in = 1;
+  #20;
+
+  // Enter language
+  Language = 1;
+  #20;
+
+  // Enter current PIN
+  password = 17'h1F5E; // Use a valid PIN
+  #20;
+
+  // Select change PIN operation
+  opcode = 3'b101; // Change PIN operation
+  new_pin = 17'hABCDE; // Set new PIN
+  #20;
+
+  // Confirm PIN change
+  take_receipt = 1;
+  #20;
+
+  // Check expected outputs
+  if (Withdrew_Successfully == 0 && ATM_Usage_Finished == 0 && Balance_Shown == 0 && Deposited_Successfully == 0 &&
+      Transfer_Successfully == 0 && Pin_Changed_Successfully == 1 && Receipt_Printed == 1)
+    $display("Test Scenario 6: Change PIN - Passed");
+  else
+    $display("Test Scenario 6: Change PIN - Failed");
+
+
+
+
+// Test Scenario 7: Insufficient Balance for Withdrawal
+
+  // Insert card
+  Card_in = 1;
+  #20;
+
+  // Enter language
+  Language = 1;
+  #20;
+
+  // Enter PIN
+  password = 17'h1F5E; // Use a valid PIN
+  #20;
+
+  // Select withdraw operation
+  opcode = 3'b010; // Withdraw operation
+  withdraw_amount = 1500; // Set withdrawal amount greater than balance
+  #20;
+
+  // Check expected outputs
+  if (Withdrew_Successfully == 0 && ATM_Usage_Finished == 0 && Balance_Shown == 0 && Deposited_Successfully == 0 &&
+      Transfer_Successfully == 0 && Pin_Changed_Successfully == 0 && Receipt_Printed == 0)
+    $display("Test Scenario 7: Insufficient Balance for Withdrawal - Passed");
+  else
+    $display("Test Scenario 7: Insufficient Balance for Withdrawal - Failed");
+
+
+
+
+// Test Scenario 8: Invalid Transfer Account
+
+  // Insert card
+  Card_in = 1;
+  #20;
+
+  // Enter language
+  Language = 1;
+  #20;
+
+  // Enter PIN
+  password = 17'h1F5E; // Use a valid PIN
+  #20;
+
+  // Select transfer operation
+  opcode = 3'b100; // Transfer operation
+  Pers_Account_No = 17'h1111; // Set invalid recipient account
+  Transfer_Amount = 200; // Set transfer amount
+  #20;
+
+  // Check expected outputs
+  if (Withdrew_Successfully == 0 && ATM_Usage_Finished == 0 && Balance_Shown == 0 && Deposited_Successfully == 0 &&
+      Transfer_Successfully == 0 && Pin_Changed_Successfully == 0 && Receipt_Printed == 0)
+    $display("Test Scenario 8: Invalid Transfer Account - Passed");
+  else
+    $display("Test Scenario 8: Invalid Transfer Account - Failed");
+
+
+
+// Test Scenario 9: Multiple Transactions
+
+  // Insert card
+  Card_in = 1;
+  #20;
+
+  // Enter language
+  Language = 1;
+  #20;
+
+  // Enter PIN
+  password = 17'h1F5E; // Use a valid PIN
+  #20;
+
+  // Perform multiple transactions
+  opcode = 3'b001; // Balance inquiry
+  #20;
+  opcode = 3'b011; // Deposit
+  deposit_amount = 300; // Set deposit amount
+  money_counting = 1; // Signal money counting
+  #20;
+  opcode = 3'b010; // Withdraw
+  withdraw_amount = 100; // Set withdrawal amount
+  #20;
+
+  // Confirm last transaction
+  take_receipt = 1;
+  #20;
+
+  // Check expected outputs
+  if (Withdrew_Successfully == 1 && ATM_Usage_Finished == 0 && Balance_Shown == 0 && Deposited_Successfully == 0 &&
+      Transfer_Successfully == 0 && Pin_Changed_Successfully == 0 && Receipt_Printed == 1)
+    $display("Test Scenario 9: Multiple Transactions - Passed");
+  else
+    $display("Test Scenario 9: Multiple Transactions - Failed");
+
+
+
+
+// Test Scenario 10: Attempt to Transfer to Own Account
+
+  // Insert card
+  Card_in = 1;
+  #20;
+
+  // Enter language
+  Language = 1;
+  #20;
+
+  // Enter PIN
+  password = 17'h1F5E; // Use a valid PIN
+  #20;
+
+  // Select transfer operation
+  opcode = 3'b100; // Transfer operation
+  Pers_Account_No = 17'h1F5E; // Attempt to transfer to own account
+  Transfer_Amount = 200; // Set transfer amount
+  #20;
+
+  // Check expected outputs
+  if (Withdrew_Successfully == 0 && ATM_Usage_Finished == 0 && Balance_Shown == 0 && Deposited_Successfully == 0 &&
+      Transfer_Successfully == 0 && Pin_Changed_Successfully == 0 && Receipt_Printed == 0)
+    $display("Test Scenario 10: Attempt to Transfer to Own Account - Passed");
+  else
+    $display("Test Scenario 10: Attempt to Transfer to Own Account - Failed");
+
+
+
+
+// Test Scenario 11: Attempt to Deposit without Money Counting
+
+  // Insert card
+  Card_in = 1;
+  #20;
+
+  // Enter language
+  Language = 1;
+  #20;
+
+  // Enter PIN
+  password = 17'h1F5E; // Use a valid PIN
+  #20;
+
+  // Select deposit operation without money counting
+  opcode = 3'b011; // Deposit operation
+  deposit_amount = 300; // Set deposit amount
+  money_counting = 0; // Signal no money counting
+  #20;
+
+  // Check expected outputs
+  if (Withdrew_Successfully == 0 && ATM_Usage_Finished == 0 && Balance_Shown == 0 && Deposited_Successfully == 0 &&
+      Transfer_Successfully == 0 && Pin_Changed_Successfully == 0 && Receipt_Printed == 0)
+    $display("Test Scenario 11: Attempt to Deposit without Money Counting - Passed");
+  else
+    $display("Test Scenario 11: Attempt to Deposit without Money Counting - Failed");
+
+
+
+
+// Test Scenario 12: Multiple Unsuccessful PIN Attempts
+
+  // Insert card
+  Card_in = 1;
+  #20;
+
+  // Enter language
+  Language = 1;
+  #20;
+
+  // Enter incorrect PIN multiple times
+  for ( i = 0; i < 3; i = i + 1) begin
+    password = 17'h0000 + i; // Use incorrect PIN
+    #20;
+  end
+
+  // Check expected outputs
+  if (Withdrew_Successfully == 0 && ATM_Usage_Finished == 0 && Balance_Shown == 0 && Deposited_Successfully == 0 &&
+      Transfer_Successfully == 0 && Pin_Changed_Successfully == 0 && Receipt_Printed == 0)
+    $display("Test Scenario 12: Multiple Unsuccessful PIN Attempts - Passed");
+  else
+    $display("Test Scenario 12: Multiple Unsuccessful PIN Attempts - Failed");
+
+
+
+
+// Test Scenario 13: Eject Card Without Transaction
+
+  // Insert card
+  Card_in = 1;
+  #20;
+
+  // Eject card without performing any transaction
+  another_transaction_bit = 0;
+  #20;
+
+  // Check expected outputs
+  if (Withdrew_Successfully == 0 && ATM_Usage_Finished == 1 && Balance_Shown == 0 && Deposited_Successfully == 0 &&
+      Transfer_Successfully == 0 && Pin_Changed_Successfully == 0 && Receipt_Printed == 0)
+    $display("Test Scenario 13: Eject Card Without Transaction - Passed");
+  else
+    $display("Test Scenario 13: Eject Card Without Transaction - Failed");
+
+
+
+
+// Test Scenario 14: Attempt to Withdraw Without Inserting Card
+
+  // Do not insert card
+  Card_in = 0;
+  #20;
+
+  // Attempt to perform a withdrawal
+  opcode = 3'b010; // Withdraw operation
+  withdraw_amount = 100; // Set withdrawal amount
+  #20;
+
+  // Check expected outputs
+  if (Withdrew_Successfully == 0 && ATM_Usage_Finished == 0 && Balance_Shown == 0 && Deposited_Successfully == 0 &&
+      Transfer_Successfully == 0 && Pin_Changed_Successfully == 0 && Receipt_Printed == 0)
+    $display("Test Scenario 14: Attempt to Withdraw Without Inserting Card - Passed");
+  else
+    $display("Test Scenario 14: Attempt to Withdraw Without Inserting Card - Failed");
+
+
+
+
+// Test Scenario 15: Attempt to Change PIN Without Inserting Card
+
+  // Do not insert card
+  Card_in = 0;
+  #20;
+
+  // Attempt to change PIN
+  opcode = 3'b101; // Change PIN operation
+  new_pin = 17'hABCDE; // Set new PIN
+  #20;
+
+  // Check expected outputs
+  if (Withdrew_Successfully == 0 && ATM_Usage_Finished == 0 && Balance_Shown == 0 && Deposited_Successfully == 0 &&
+      Transfer_Successfully == 0 && Pin_Changed_Successfully == 0 && Receipt_Printed == 0)
+    $display("Test Scenario 15: Attempt to Change PIN Without Inserting Card - Passed");
+  else
+    $display("Test Scenario 15: Attempt to Change PIN Without Inserting Card - Failed");
+
+
+
+
+// Test Scenario 16: Attempt to Print Receipt Without Transaction
+
+  // Insert card
+  Card_in = 1;
+  #20;
+
+  // Attempt to print receipt without performing any transaction
+  opcode = 3'b010; // Withdraw operation
+  take_receipt = 1;
+  #20;
+
+  // Check expected outputs
+  if (Withdrew_Successfully == 0 && ATM_Usage_Finished == 0 && Balance_Shown == 0 && Deposited_Successfully == 0 &&
+      Transfer_Successfully == 0 && Pin_Changed_Successfully == 0 && Receipt_Printed == 0)
+    $display("Test Scenario 16: Attempt to Print Receipt Without Transaction - Passed");
+  else
+    $display("Test Scenario 16: Attempt to Print Receipt Without Transaction - Failed");
+
+
+
+
+
+// Test Scenario 17: Invalid Operation Code
+  // Insert card
+  Card_in = 1;
+  #20;
+
+  // Enter language
+  Language = 1;
+  #20;
+
+  // Enter PIN
+  password = 17'h1F5E; // Use a valid PIN
+  #20;
+
+  // Set invalid operation code
+  opcode = 3'b111; // Invalid operation code
+  #20;
+
+  // Check expected outputs
+  if (Withdrew_Successfully == 0 && ATM_Usage_Finished == 0 && Balance_Shown == 0 && Deposited_Successfully == 0 &&
+      Transfer_Successfully == 0 && Pin_Changed_Successfully == 0 && Receipt_Printed == 0)
+    $display("Test Scenario 17: Invalid Operation Code - Passed");
+  else
+    $display("Test Scenario 17: Invalid Operation Code - Failed");
+
+
+     for (i = 0; i <= 1000; i = i + 1) begin
       @(negedge clk) 
       Card_in = $random();
       Language = $random();
@@ -98,6 +581,9 @@ module ATM_TB;
 
 
     end
-  end
+
+
+end
+
 
 endmodule
