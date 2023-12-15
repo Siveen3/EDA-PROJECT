@@ -18,10 +18,10 @@
 //VIP 2ZBOTY EL BITS M3 EL ARRAY 3SHAN USER INPUTS+ eject 25er kol state
 
 module ATM (
-input clk, reset, Card_in, Language, Timer, money_counting, another_transaction_bit,// hi
+input clk, reset, Card_in,Timer, money_counting, another_transaction_bit,// hi
 input[2:0] opcode,
 input[16:0] password, new_pin,
-input take_receipt,allow_transfer,
+input take_receipt,
 input wire  [16:0] Pers_Account_No, ur_account,
 input wire  [14:0] withdraw_amount,Transfer_Amount,deposit_amount,
 output reg Transfer_Successfully, ATM_Usage_Finished, Balance_Shown, Deposited_Successfully, Withdrew_Successfully, Pin_Changed_Successfully
@@ -29,7 +29,6 @@ output reg Transfer_Successfully, ATM_Usage_Finished, Balance_Shown, Deposited_S
 // don't forget to add your outputs 7ader 7ader2
 );
 integer i;
-wire [16:0] ur_pin,ur_balance;
 reg[3:0] current_state, next_state;
 reg[1:0] chances_Pin ;
 reg[1:0] chances_Taccount;
@@ -43,6 +42,7 @@ initial begin
     account[3][0] = 17'h8629; account[3][1] = 17'hD05; account[3][2] = 17'hBB8;
     chances_Pin = 2'b00;
     chances_Taccount = 2'b00;
+    account_sn=4'b1111;
     
 end
 
@@ -105,7 +105,7 @@ parameter[4:0]  idle_state                  = 5'b00000,
 
                                     end
                                 end
-                              ///// ask the T	enwonwond unindended behaviour 
+                               if(account_sn==4'b1111) 
                                 next_state <= eject_card_state;   
                         end
 				 
@@ -117,7 +117,7 @@ parameter[4:0]  idle_state                  = 5'b00000,
     pin_state       : begin
                         if(chances_Pin == 2'b11)
                         next_state <= eject_card_state;
-				        else if(password != ur_pin) begin
+				        else if(password != account[account_sn][1]) begin
                             chances_Pin = chances_Pin + 1;
 					        next_state <= pin_state;
                         end
@@ -144,9 +144,9 @@ parameter[4:0]  idle_state                  = 5'b00000,
                     end
 
     withdraw_state     	: begin  //takes the money value
-                                if(withdraw_amount > ur_balance)
+                                if(withdraw_amount > account[account_sn][0])
                                     next_state <= eject_card_state;
-                                else
+                                else if (withdraw_amount <= account[account_sn][0])
                                     next_state <= confirm_withdraw;
 						end
 
@@ -206,13 +206,20 @@ check_transfer_value_state   : begin //takes transfer amount
                             end   
 
     deposit_state:          begin
-                                    if (money_counting == 1'b1) //if money is deposited money_counting = 1
-                                        next_state <= confirm_deposit;
+                                    if (money_counting == 1'b1)begin //if money is deposited money_counting = 1
+                                         account[account_sn][2] <= (account[account_sn][2] + deposit_amount);
+                                         Deposited_Successfully =1; 
+                                         next_state<= receipt_state;end
+                                    else
+                                     next_state<= eject_card_state;
                             end
 
     confirm_deposit:    begin
-                            account[account_sn][2] <= account[account_sn][2] + deposit_amount;
-                            next_state <= receipt_state;
+                            if (money_counting == 1'b1) begin
+                            account[account_sn][2] <= (account[account_sn][2] + deposit_amount);
+                            next_state <= receipt_state; end
+                            else
+                             next_state<= eject_card_state;
                         end
 
 
@@ -231,7 +238,7 @@ check_transfer_value_state   : begin //takes transfer amount
                                     else
                                         next_state <= eject_card_state;
                             end
-
+    default:                            next_state <= idle_state;
     endcase
     end
 
@@ -317,7 +324,7 @@ check_transfer_value_state   : begin //takes transfer amount
         deposit_state:      begin
                                 ATM_Usage_Finished        = 1'b0;
                                 Balance_Shown             = 1'b0;
-                                Deposited_Successfully    = 1'b0;
+                                //Deposited_Successfully    = 1'b0;
                                 Withdrew_Successfully     = 1'b0;
                                 Transfer_Successfully     = 1'b0;
                                 Pin_Changed_Successfully  = 1'b0;
