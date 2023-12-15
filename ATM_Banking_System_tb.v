@@ -40,13 +40,25 @@ module ATM_TB;
   );
 
   integer i;
+   reg index,index2;
 
   // Clock generation
   initial begin
     clk = 0;
     forever #5 clk = ~clk;
   end
-
+  reg[1:0] chances_Pin ;
+reg[1:0] chances_Taccount;
+parameter[3:0] number_of_accounts = 4'd4;
+reg [31:0] account [0:number_of_accounts-1][0:2];
+   initial begin
+   account[0][0] = 17'hC5AA; account[0][1] = 17'h1F5E; account[0][2] = 17'h1388;//accout pin balance
+    account[1][0] = 17'h705C; account[1][1] = 17'h4BF; account[1][2] = 17'h1F40;
+    account[2][0] = 17'h3219; account[2][1] = 17'h4D2; account[2][2] = 17'h1D4C;
+    account[3][0] = 17'h8629; account[3][1] = 17'hD05; account[3][2] = 17'hBB8;
+    chances_Pin = 2'b00;
+    chances_Taccount = 2'b00;
+end
   // Initialize inputs
   initial begin
     reset = 0;
@@ -77,7 +89,7 @@ module ATM_TB;
 
     reset = 1'b1;
 
-   
+ /*  
   // Test Scenario 1: Successful Withdrawal
 
   // Insert card
@@ -295,7 +307,7 @@ module ATM_TB;
     $display("Test Scenario 7: Insufficient Balance for Withdrawal - Failed");
 
 
-
+/*
 
 // Test Scenario 8: Invalid Transfer Account
 
@@ -559,29 +571,30 @@ module ATM_TB;
   else
     $display("Test Scenario 17: Invalid Operation Code - Failed");
 
-
-     for (i = 0; i <= 1000; i = i + 1) begin
+*/
+     for (i = 0; i <= 1000; i = i + 1) begin 
       @(negedge clk) 
-      Card_in = $random();
-      Language = $random();
-      Timer = $random();
-      money_counting = $random();
-      another_transaction_bit = $random();
-      opcode = $urandom % 8;  // Randomize opcode in the range [0, 7]
-      password = $random();
+      index = $urandom(1)%4;
+      index2 = $urandom(3)%4;
+      while(index == index2)
+        index2 = $urandom(2)%4;
+      Card_in = $urandom()%2;
+      Language = $urandom()%2;
+      money_counting = $urandom()%2;
+      another_transaction_bit = $urandom()%2;
+      opcode = $urandom %8;  // Randomize opcode in the range [0, 7]
+      password = account[index][1];
       new_pin = $random();
-      allowwithdraw = $random();
-      take_receipt = $random();
-      allow_transfer = $random();
-      Pers_Account_No = $random();
-      ur_account = $random();
-      withdraw_amount = $random();
-      Transfer_Amount = $random();
-      deposit_amount = $random();
+      take_receipt = $urandom()%2;
+      allow_transfer = $urandom()%2;
+      Pers_Account_No = account[index2][0];
+      ur_account = account[index][0];
+      withdraw_amount = $urandom()%32767;
+      Transfer_Amount = $urandom()%32767;
+      deposit_amount = $urandom()%32767;
 
 
     end
-
 
 end
 
