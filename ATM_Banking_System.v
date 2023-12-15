@@ -21,9 +21,9 @@ module ATM (
 input clk, reset, Card_in, Language, Timer, money_counting, another_transaction_bit,// hi
 input[2:0] opcode,
 input[16:0] password, new_pin,
-input allowwithdraw,take_receipt,allow_transfer,
+input take_receipt,allow_transfer,
 input wire  [16:0] Pers_Account_No, ur_account,
-input wire  [18:0] withdraw_amount,Transfer_Amount,deposit_amount,
+input wire  [14:0] withdraw_amount,Transfer_Amount,deposit_amount,
 output reg Transfer_Successfully, ATM_Usage_Finished, Balance_Shown, Deposited_Successfully, Withdrew_Successfully, Pin_Changed_Successfully
 ,Receipt_Printed
 // don't forget to add your outputs 7ader 7ader2
@@ -32,19 +32,17 @@ integer i;
 wire [16:0] ur_pin,ur_balance;
 reg[3:0] current_state, next_state;
 reg[1:0] chances_Pin ;
-reg[1:0] chances_Taccount ;
-reg[1:0] chances_ur_account ;
+reg[1:0] chances_Taccount;
 reg[3:0] account_sn, transi;
 parameter[3:0] number_of_accounts = 4'd4;
-reg [16:0] account [0:number_of_accounts-1][0:2];
+reg [31:0] account [0:number_of_accounts-1][0:2];
 initial begin
- account[0][0] = 17'hC5AA; account[0][1] = 17'h1F5E; account[0][2] = 17'h1388;
+ account[0][0] = 17'hC5AA; account[0][1] = 17'h1F5E; account[0][2] = 17'h1388;//accout pin balance
     account[1][0] = 17'h705C; account[1][1] = 17'h4BF; account[1][2] = 17'h1F40;
     account[2][0] = 17'h3219; account[2][1] = 17'h4D2; account[2][2] = 17'h1D4C;
     account[3][0] = 17'h8629; account[3][1] = 17'hD05; account[3][2] = 17'hBB8;
     chances_Pin = 2'b00;
     chances_Taccount = 2'b00;
-    chances_ur_account = 2'b00;
     
 end
 
@@ -141,6 +139,8 @@ parameter[4:0]  idle_state                  = 5'b00000,
                                 next_state <= transfer_state;
                             else if(opcode == 3'b101)
                                 next_state <= change_pin_state;
+                            else 
+                                next_state <= eject_card_state;
                     end
 
     withdraw_state     	: begin  //takes the money value
