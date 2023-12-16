@@ -1,0 +1,224 @@
+`timescale 1ns / 1ps
+
+////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer:
+//
+// Create Date:   15:01:53 12/14/2022
+// Design Name:   MainModule
+// Module Name:   D:/Ain Shams University/Junior/Electronic Design Automation/Project/V2.0/EDA1.0/ATM_tb.v
+// Project Name:  EDA1.0
+// Target Device:  
+// Tool versions:  
+// Description: 
+//
+// Verilog Test Fixture created by ISE for module: MainModule
+//
+// Dependencies:
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+////////////////////////////////////////////////////////////////////////////////
+
+module ATM_tb();
+
+	// Inputs
+	reg clk;
+	reg rst;
+    reg Timer;
+    reg Reciept;
+    reg Continue;
+	reg [3:0] Pin,New_Pin;
+	reg [5:0] WithDraw_Amount;
+	reg [4:0] Deposit_Amount;
+	reg [2:0] Operation;
+	reg Card_in;
+	reg Language_chosen;
+	reg leave;
+	//integer numofoperations;
+	reg goMain;
+	integer i, j, seed, decision, ran;
+	// Outputs
+	wire [7:0] FinalBalance, CB
+	;
+
+	// Instantiate the Unit Under Test (UUT)
+	MainModule uut (
+		.clk(clk),
+        .Timer(Timer),
+		.rst(rst), 
+		.Pin(Pin),
+        .Reciept(Reciept),
+        .Continue(Continue),
+        .New_Pin(New_Pin),
+		.WithDraw_Amount(WithDraw_Amount), 
+		.Deposit_Amount(Deposit_Amount), 
+		.Operation(Operation), 
+		.FinalBalance(FinalBalance),
+		.CB(CB),
+		.Card_in(Card_in), 
+		.Language_chosen(Language_chosen), 
+		.leave(leave),
+		.goMain(goMain)
+	);
+	//Clock Generation
+	always #12 clk = !clk;
+	
+	//Assertions
+	//else $error("Error, Balance less than zero");
+	initial begin
+		// Initialize all Inputs by zero
+		clk = 0;					//Clock
+		rst = 1;					//Reset
+		Pin = 0;					//input pin to login
+		WithDraw_Amount = 0;		
+		Deposit_Amount = 0;
+		Operation = 0;				//operation Key: 0 -> withdraw, 1 -> deposit, 2 -> check balance, otherwise -> leaveit
+		Card_in = 0;						//To insert card
+		Language_chosen = 0;						//To choose language 
+		leave = 0;	
+        New_Pin=0;					//To exit
+		//numofoperations = 0;		//counter for number of operations
+		ran = 0;					//varible to hold random numbers
+		goMain = 0;					//to return to the main menu and do another operation
+		i = 0;						//counter of iterations
+		decision=0;					//random number to decide the decision
+		Continue= 0;
+        Reciept = 0;	
+		
+
+
+		#50 rst = 0;
+		#50 rst = 1;
+	
+		//$finish;//  el operation 11     , reset , timer , incorrect pin, 
+
+                Card_in = 1; // pin 8alat
+                Language_chosen = 1;				
+                Pin = 4'b1111;	
+                Timer = 0;
+                New_Pin= $urandom()%16;
+                WithDraw_Amount = $urandom()% 500; 
+                Deposit_Amount= $urandom()% 500; 
+                Operation = $urandom()% 2;
+                leave = $urandom()% 2;
+                goMain = $urandom()% 2;
+                @(negedge clk);
+                if (Pin != 4'b1101)
+                $display("error incorrect PIN");
+                Card_in = 1;				//default Card_in
+                Language_chosen = 1;				//default Language_chosen
+                Pin = 4'b1101;	
+                Timer = 0;
+                WithDraw_Amount = $urandom()% 500; 
+                Deposit_Amount= $urandom()% 500; // 4/30 probability to randomize the pin
+                Operation =4 +$urandom()% 4;
+                New_Pin= $urandom()%16;
+                leave = $urandom()% 2;
+                goMain = $urandom()% 2;
+                $stop();
+                @(negedge clk);
+                if (Operation > 3'b011)
+                $display("error ejecting");
+                 Card_in = 1;				//default Card_in
+                Language_chosen = 1;				//default Language_chosen	
+                Timer = 0;
+                rst = 1;
+                WithDraw_Amount = $urandom()% 500; 
+                Deposit_Amount= $urandom()% 500; // 
+                Operation = $urandom()% 7;
+                leave = $urandom()% 2;
+                New_Pin= $urandom()%16;
+                Continue= $urandom()% 2;
+                Reciept = $urandom()% 2;
+                goMain = $urandom()% 2;
+                for(i=0;i<100;i=i+1)
+                Pin= 2+ $urandom()%8;
+                @(negedge clk);
+                 Card_in = 1;				//default Card_in
+                 Language_chosen = 1;				//default Language_chosen	
+                 Timer = 0;
+                 rst = 1;
+                WithDraw_Amount = $urandom()% 500; 
+                Deposit_Amount= $urandom()% 500; //
+                Operation = 3'b011;
+                leave = $urandom()% 2;
+                New_Pin= $urandom()%16;
+                goMain = $urandom()% 2;
+                Continue= $urandom()% 2;
+                Reciept = $urandom()% 2;
+                Pin= 4'b1101;
+                @(negedge clk);
+                if(1)
+                $display("%t: check" ,$time);
+                 Card_in = 1;				//default Card_in
+                 Language_chosen = 1;				//default Language_chosen	
+                 Timer = 1;
+                 rst = 1;
+                WithDraw_Amount = $urandom()% 500; 
+                Deposit_Amount= $urandom()% 500; //
+                 Operation =$urandom(seed)%4; 
+                leave = $urandom()% 2;
+                New_Pin= $urandom()%16;
+                goMain = $urandom()% 2;
+                Continue= $urandom()% 2;
+                Reciept = $urandom()% 2;
+                Pin= 4'b1101;
+                @(negedge clk);
+                if(1)
+                $display("sorry we ran out of time");
+                
+
+   
+    for(j=0 ; j<70 ; j=j+1)
+			begin
+			
+				seed =j;
+				$display("seed is %d" , seed);
+            for(i=0;i<1000;i=i+1)
+            begin
+                @(negedge clk);
+                 Card_in = 1;				//default Card_in
+                 Language_chosen = $urandom(seed)% 2;				//default Language_chosen
+                 Pin = 4'b1101;
+                ran = $urandom(seed)%30;
+                if(ran>20)
+                Pin= $urandom(seed)% 16;	
+                Timer = 0;
+                rst = 1;
+                Continue= $urandom(seed)% 2;
+                Reciept = $urandom(seed)% 2;
+                New_Pin= $urandom()%16;
+                WithDraw_Amount = $random(seed)% 500; 
+                Deposit_Amount= $random(seed)% 500; // 4/30 probability to randomize the pin
+                Operation = $urandom(seed)%4;
+                leave = $urandom(seed)% 2;
+                goMain = $urandom(seed)% 2;
+
+
+            end end
+		//directed testing
+
+		#50 rst = 0;
+		#50 rst = 1;
+		
+		#50 Card_in = 1; Language_chosen = 1;
+		#50 Pin = 4'b1101;
+			Operation = 2;
+			rst = 0;
+			
+		#50 rst = 1;
+		
+		#50 Card_in = 1; Language_chosen = 1;
+		#50 Pin = 4'b1101;
+			Operation = 2;
+		#50	Operation = 3;
+		
+		
+		$display("i");
+		
+		$stop;
+	 end
+endmodule // pin msh by5osh home state display assertions show el mawgod 
