@@ -9,7 +9,6 @@
 
 
 
-//--------------------------------------
 // CONFIRM withdraw (check)
 // CONFIRM transfer (check)
 // CONFIRM deposit
