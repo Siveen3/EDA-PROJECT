@@ -1,0 +1,12 @@
+# Ignore compiled files and simulator outputs
+*.exe
+*.wlf
+*.do
+
+# Ignore simulator working directories
+work/
+output/
+
+# Ignore IDE/editor-specific folders
+.vscode/
+.vs/
