@@ -69,15 +69,19 @@ The goal is to compare hardware execution with software logic.
 ### ✅ Login & Balance Check
 
 Enter PIN: **** (Correct)
+
 Access Granted
+
 Balance: $1000
 
 ### 💵 Deposit
 
 Enter deposit amount: $500
+
 New Balance: $1500
 
 ### ❌ Withdraw (Insufficient Funds)
 
 Enter withdrawal amount: $2000
+
 Error: Insufficient Funds
